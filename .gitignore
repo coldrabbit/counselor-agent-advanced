@@ -1,0 +1,34 @@
+# 环境变量（含密钥）
+.env
+
+# 数据库文件
+*.db
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build
+dist/
+*.egg-info/
+
+# Alembic
+alembic/versions/*.pyc
+
+# 前端
+frontend/dist/
+frontend/node_modules/
+
+# Superpowers
+.superpowers/
