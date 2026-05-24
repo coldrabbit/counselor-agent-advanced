@@ -1,0 +1,34 @@
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+from app.api.notices import router as notice_router
+from app.api.counselor import router as counselor_router
+from app.api.talk_records import router as talk_records_router
+from alembic.config import Config as AlembicConfig
+from alembic import command
+
+
+def create_app() -> FastAPI:
+    app = FastAPI(title="Counselor OS - Notification Generator")
+
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+
+    app.include_router(notice_router, prefix="/api")
+    app.include_router(counselor_router, prefix="/api")
+    app.include_router(talk_records_router, prefix="/api")
+
+    @app.on_event("startup")
+    def on_startup():
+        alembic_cfg = AlembicConfig("alembic.ini")
+        command.upgrade(alembic_cfg, "head")
+
+    return app
+
+
+app = create_app()
