@@ -18,6 +18,11 @@ const router = createRouter({
       name: 'students',
       component: () => import('../pages/StudentManagement.vue'),
     },
+    {
+      path: '/risks',
+      name: 'risks',
+      component: () => import('../pages/RiskDashboard.vue'),
+    },
   ],
 })
 

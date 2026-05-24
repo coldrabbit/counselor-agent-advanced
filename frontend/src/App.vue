@@ -7,6 +7,7 @@
       <router-link to="/">通知生成器</router-link>
       <router-link to="/talk-record">谈心谈话</router-link>
       <router-link to="/students">学生管理</router-link>
+      <router-link to="/risks">风险预警</router-link>
     </nav>
     <router-view />
   </div>
