@@ -4,7 +4,8 @@ const router = createRouter({
   history: createWebHistory(),
   routes: [
     { path: '/login', name: 'login', component: () => import('../pages/Login.vue'), meta: { guest: true } },
-    { path: '/', name: 'notice-generator', component: () => import('../pages/NoticeGenerator.vue'), meta: { auth: true } },
+    { path: '/', name: 'home', component: () => import('../pages/Home.vue'), meta: { auth: true } },
+    { path: '/notices', name: 'notice-generator', component: () => import('../pages/NoticeGenerator.vue'), meta: { auth: true } },
     { path: '/talk-record', name: 'talk-record', component: () => import('../pages/TalkRecordGenerator.vue'), meta: { auth: true } },
     { path: '/students', name: 'students', component: () => import('../pages/StudentManagement.vue'), meta: { auth: true } },
     { path: '/risks', name: 'risks', component: () => import('../pages/RiskDashboard.vue'), meta: { auth: true } },

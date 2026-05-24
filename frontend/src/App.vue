@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { useAuthStore } from './stores/auth'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 
 const auth = useAuthStore()
 const router = useRouter()
+const route = useRoute()
 
 function handleLogout() {
   auth.logout()
@@ -13,8 +14,9 @@ function handleLogout() {
 
 <template>
   <div class="app">
-    <nav class="app-nav">
-      <router-link to="/">通知生成器</router-link>
+    <nav v-if="route.name !== 'login'" class="app-nav">
+      <router-link to="/">首页</router-link>
+      <router-link to="/notices">通知生成器</router-link>
       <router-link to="/talk-record">谈心谈话</router-link>
       <router-link to="/students">学生管理</router-link>
       <router-link to="/risks">风险预警</router-link>
