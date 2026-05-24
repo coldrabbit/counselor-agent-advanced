@@ -20,6 +20,10 @@ const newClassMajor = ref('')
 
 const importing = ref(false)
 
+function downloadTemplate() {
+  window.open('/api/students/import/template', '_blank')
+}
+
 async function handleImportFile(options: any) {
   importing.value = true
   try {
@@ -143,6 +147,7 @@ async function handleAddClass() {
       >
         <el-button :loading="importing">📥 导入 Excel</el-button>
       </el-upload>
+      <el-button @click="downloadTemplate">📄 下载模板</el-button>
     </div>
 
     <el-table :data="store.students" v-loading="store.loading" class="student-table">

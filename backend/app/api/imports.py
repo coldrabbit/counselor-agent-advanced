@@ -75,3 +75,46 @@ async def import_students(file: UploadFile = File(...), db: Session = Depends(ge
             skipped += 1
 
     return {"created": created, "skipped": skipped, "errors": errors, "total": len(rows) - 1}
+
+
+@router.get("/import/template")
+def download_template():
+    from openpyxl import Workbook
+    from openpyxl.worksheet.datavalidation import DataValidation
+    from fastapi.responses import StreamingResponse
+
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "学生导入模板"
+
+    # 表头
+    headers = ["姓名", "学号", "班级", "手机", "风险等级"]
+    ws.append(headers)
+
+    # 示例数据
+    ws.append(["李明", "2024001", "2024级软件1班", "13800001111", "low"])
+    ws.append(["王红", "2024002", "2024级软件1班", "13800002222", "medium"])
+
+    # 设置列宽
+    ws.column_dimensions['A'].width = 12
+    ws.column_dimensions['B'].width = 14
+    ws.column_dimensions['C'].width = 20
+    ws.column_dimensions['D'].width = 16
+    ws.column_dimensions['E'].width = 12
+
+    # 风险等级添加数据验证（下拉选项）
+    dv = DataValidation(type="list", formula1='"low,medium,high"', allow_blank=True)
+    dv.prompt = "请选择风险等级"
+    dv.promptTitle = "风险等级"
+    ws.add_data_validation(dv)
+    dv.add('E2:E1000')
+
+    buf = io.BytesIO()
+    wb.save(buf)
+    buf.seek(0)
+
+    return StreamingResponse(
+        buf,
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers={"Content-Disposition": "attachment; filename=student_import_template.xlsx"}
+    )
