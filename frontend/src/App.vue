@@ -6,6 +6,7 @@
     <nav class="app-nav">
       <router-link to="/">通知生成器</router-link>
       <router-link to="/talk-record">谈心谈话</router-link>
+      <router-link to="/students">学生管理</router-link>
     </nav>
     <router-view />
   </div>

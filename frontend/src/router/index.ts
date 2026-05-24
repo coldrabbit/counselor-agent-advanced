@@ -13,6 +13,11 @@ const router = createRouter({
       name: 'talk-record',
       component: () => import('../pages/TalkRecordGenerator.vue'),
     },
+    {
+      path: '/students',
+      name: 'students',
+      component: () => import('../pages/StudentManagement.vue'),
+    },
   ],
 })
 
