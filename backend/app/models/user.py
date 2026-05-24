@@ -14,4 +14,5 @@ class User(Base):
     name: Mapped[str] = mapped_column(String(64), nullable=False)
     role: Mapped[str] = mapped_column(String(32), default="counselor")
     college: Mapped[str] = mapped_column(String(128), default="")
+    password_hash: Mapped[str] = mapped_column(String(256), default="")
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)

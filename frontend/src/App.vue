@@ -1,4 +1,14 @@
 <script setup lang="ts">
+import { useAuthStore } from './stores/auth'
+import { useRouter } from 'vue-router'
+
+const auth = useAuthStore()
+const router = useRouter()
+
+function handleLogout() {
+  auth.logout()
+  router.push('/login')
+}
 </script>
 
 <template>
@@ -12,6 +22,9 @@
       <router-link to="/documents">知识库</router-link>
       <router-link to="/activities">活动策划</router-link>
       <router-link to="/employment">就业实习</router-link>
+      <div style="flex:1" />
+      <span v-if="auth.user" style="color:rgba(255,255,255,0.8);font-size:12px;margin-right:12px">{{ auth.user.name }}</span>
+      <button v-if="auth.user" @click="handleLogout" style="background:rgba(255,255,255,0.15);color:#fff;border:none;padding:5px 14px;border-radius:14px;cursor:pointer;font-size:12px">退出</button>
     </nav>
     <router-view />
   </div>

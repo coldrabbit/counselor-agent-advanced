@@ -21,6 +21,7 @@ from app.api.users import router as user_router
 from app.api.workflows_api import router as wf_router
 from app.api.activities import router as activities_router
 from app.api.employments import router as employments_router
+from app.api.auth import router as auth_router
 from alembic.config import Config as AlembicConfig
 from alembic import command
 
@@ -56,6 +57,7 @@ def create_app() -> FastAPI:
     app.include_router(wf_router, prefix="/api")
     app.include_router(activities_router, prefix="/api")
     app.include_router(employments_router, prefix="/api")
+    app.include_router(auth_router, prefix="/api")
 
     @app.on_event("startup")
     def on_startup():
