@@ -9,6 +9,9 @@ from app.models.template import NoticeTemplate
 from app.models.risk_record import RiskRecord
 from app.models.document import Document
 from app.models.user import User
+from app.models.workflow import Workflow
+from app.models.activity import Activity
+from app.models.employment import Employment
 
 
 def init_db():

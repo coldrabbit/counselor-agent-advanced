@@ -10,6 +10,8 @@
       <router-link to="/risks">风险预警</router-link>
       <router-link to="/analysis">学情分析</router-link>
       <router-link to="/documents">知识库</router-link>
+      <router-link to="/activities">活动策划</router-link>
+      <router-link to="/employment">就业实习</router-link>
     </nav>
     <router-view />
   </div>

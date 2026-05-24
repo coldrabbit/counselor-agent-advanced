@@ -138,6 +138,17 @@ async function exportPDF(type: string) {
   } catch { /* ignore */ }
 }
 
+async function sendToWechat() {
+  if (!store.currentNotice) return
+  const content = `## ${store.currentNotice.title}\n> 通知生成器\n\n${store.currentNotice.formal_notice.substring(0, 500)}`
+  try {
+    await axios.post('/api/notify/wechat', { content, msgtype: 'markdown' })
+    ElMessage.success('已发送到企业微信')
+  } catch (e: any) {
+    ElMessage.error(e.response?.data?.detail || '发送失败，请检查企业微信 Webhook 配置')
+  }
+}
+
 async function handleOCRUpload(options: any) {
   const formData = new FormData()
   formData.append('file', options.file)
@@ -279,6 +290,9 @@ async function handleOCRUpload(options: any) {
           退回修改
         </el-button>
         <el-button size="large" @click="exportPDF('notice')">导出 PDF</el-button>
+        <el-button v-if="store.currentNotice && store.currentNotice.status === 'APPROVED'" size="large" @click="sendToWechat">
+          发送到企业微信
+        </el-button>
       </div>
     </div>
 

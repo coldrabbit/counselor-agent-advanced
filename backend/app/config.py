@@ -6,6 +6,7 @@ class Settings(BaseSettings):
     deepseek_api_key: str = ""
     deepseek_base_url: str = "https://api.deepseek.com"
     deepseek_model: str = "deepseek-chat"
+    wechat_webhook_url: str = ""
 
     class Config:
         env_file = ".env"

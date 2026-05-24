@@ -18,6 +18,9 @@ from app.models.template import NoticeTemplate  # noqa: F401
 from app.models.risk_record import RiskRecord  # noqa: F401
 from app.models.document import Document  # noqa: F401
 from app.models.user import User  # noqa: F401
+from app.models.workflow import Workflow  # noqa: F401
+from app.models.activity import Activity  # noqa: F401
+from app.models.employment import Employment  # noqa: F401
 
 config = context.config
 if config.config_file_name is not None:

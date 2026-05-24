@@ -33,6 +33,16 @@ const router = createRouter({
       name: 'documents',
       component: () => import('../pages/KnowledgeBase.vue'),
     },
+    {
+      path: '/activities',
+      name: 'activities',
+      component: () => import('../pages/ActivityPlanner.vue'),
+    },
+    {
+      path: '/employment',
+      name: 'employment',
+      component: () => import('../pages/EmploymentTracker.vue'),
+    },
   ],
 })
 

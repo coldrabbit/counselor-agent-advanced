@@ -135,26 +135,31 @@ async function handleAddClass() {
       <p class="subtitle">管理学院学生基本信息，支持按班级筛选和姓名搜索</p>
     </header>
 
-    <div class="filter-bar">
-      <el-select v-model="filterClassId" placeholder="班级筛选" clearable style="width:200px" @change="handleSearch">
-        <el-option v-for="c in store.classes" :key="c.id" :label="c.name" :value="c.id" />
-      </el-select>
-      <el-input v-model="searchQuery" placeholder="搜索姓名或学号..." clearable style="width:240px"
-        @keyup.enter="handleSearch" @clear="handleSearch" />
-      <el-button @click="handleSearch">搜索</el-button>
-      <div style="flex:1" />
-      <el-button type="primary" @click="openCreate">+ 添加学生</el-button>
-      <el-button @click="showClassDialog = true">+ 添加班级</el-button>
-      <el-upload
-        :show-file-list="false"
-        :auto-upload="false"
-        accept=".xlsx,.xls"
-        :on-change="handleImportFile"
-      >
-        <el-button :loading="importing">📥 导入 Excel</el-button>
-      </el-upload>
-      <el-button @click="downloadTemplate">📄 下载模板</el-button>
-      <el-button @click="exportStudents">📤 导出数据</el-button>
+    <div class="toolbar">
+      <div class="toolbar-row">
+        <el-select v-model="filterClassId" placeholder="班级筛选" clearable style="width:180px" @change="handleSearch">
+          <el-option v-for="c in store.classes" :key="c.id" :label="c.name" :value="c.id" />
+        </el-select>
+        <el-input v-model="searchQuery" placeholder="搜索姓名或学号..." clearable style="width:220px"
+          @keyup.enter="handleSearch" @clear="handleSearch" />
+        <el-button @click="handleSearch">搜索</el-button>
+        <div style="flex:1" />
+        <el-button type="primary" @click="openCreate">+ 添加学生</el-button>
+        <el-button @click="showClassDialog = true">+ 添加班级</el-button>
+      </div>
+      <div class="toolbar-row">
+        <span style="font-size:13px;color:#909399;margin-right:8px">数据导入导出：</span>
+        <el-upload
+          :show-file-list="false"
+          :auto-upload="false"
+          accept=".xlsx,.xls"
+          :on-change="handleImportFile"
+        >
+          <el-button size="small" :loading="importing">📥 导入 Excel</el-button>
+        </el-upload>
+        <el-button size="small" @click="downloadTemplate">📄 下载模板</el-button>
+        <el-button size="small" @click="exportStudents">📤 导出数据</el-button>
+      </div>
     </div>
 
     <div v-if="showImportHint" style="margin-bottom:12px;padding:10px 14px;background:#f0f9f4;border:1px solid #b7e4cf;border-radius:8px;font-size:13px;color:#4a7c6f;display:flex;align-items:center;justify-content:space-between">
@@ -241,9 +246,13 @@ async function handleAddClass() {
 .page-header { margin-bottom: 24px; }
 .page-header h1 { font-size: 26px; color: #4a7c6f; margin: 0 0 6px 0; font-weight: 700; }
 .subtitle { color: #909399; font-size: 14px; margin: 0; }
-.filter-bar {
-  display: flex; gap: 12px; align-items: center;
-  margin-bottom: 16px; flex-wrap: wrap;
+.toolbar {
+  margin-bottom: 16px;
 }
+.toolbar-row {
+  display: flex; gap: 10px; align-items: center;
+  margin-bottom: 8px; flex-wrap: wrap;
+}
+.toolbar-row:last-child { margin-bottom: 0; }
 .student-table { border-radius: 12px; overflow: hidden; }
 </style>

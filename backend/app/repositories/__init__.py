@@ -9,6 +9,9 @@ from app.repositories.templates import TemplateRepository
 from app.repositories.risk import RiskRepository
 from app.repositories.document import DocumentRepository
 from app.repositories.user import UserRepository
+from app.repositories.workflow import WorkflowRepository
+from app.repositories.activity import ActivityRepository
+from app.repositories.employment import EmploymentRepository
 
 __all__ = [
     "BaseRepository",
@@ -22,4 +25,7 @@ __all__ = [
     "RiskRepository",
     "DocumentRepository",
     "UserRepository",
+    "WorkflowRepository",
+    "ActivityRepository",
+    "EmploymentRepository",
 ]
