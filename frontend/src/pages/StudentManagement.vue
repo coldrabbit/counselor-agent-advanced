@@ -19,9 +19,15 @@ const newClassGrade = ref('')
 const newClassMajor = ref('')
 
 const importing = ref(false)
+const showImportHint = ref(true)
 
 function downloadTemplate() {
   window.open('/api/students/import/template', '_blank')
+}
+
+function exportStudents() {
+  const params = filterClassId.value ? `?class_id=${filterClassId.value}` : ''
+  window.open(`/api/students/export${params}`, '_blank')
 }
 
 async function handleImportFile(options: any) {
@@ -148,6 +154,12 @@ async function handleAddClass() {
         <el-button :loading="importing">📥 导入 Excel</el-button>
       </el-upload>
       <el-button @click="downloadTemplate">📄 下载模板</el-button>
+      <el-button @click="exportStudents">📤 导出数据</el-button>
+    </div>
+
+    <div v-if="showImportHint" style="margin-bottom:12px;padding:10px 14px;background:#f0f9f4;border:1px solid #b7e4cf;border-radius:8px;font-size:13px;color:#4a7c6f;display:flex;align-items:center;justify-content:space-between">
+      <span>💡 Excel 表头要求：<b>姓名</b>、<b>学号</b>（必填）、班级、手机、风险等级（low/medium/high）。可先下载模板参考。</span>
+      <el-button size="small" text @click="showImportHint = false">✕</el-button>
     </div>
 
     <el-table :data="store.students" v-loading="store.loading" class="student-table">

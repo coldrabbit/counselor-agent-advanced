@@ -1,7 +1,8 @@
 import io
-from fastapi import APIRouter, Depends, UploadFile, File, HTTPException
+from fastapi import APIRouter, Depends, UploadFile, File, HTTPException, Query
+from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
-from openpyxl import load_workbook
+from openpyxl import load_workbook, Workbook
 from app.db.database import get_db
 from app.repositories.students import StudentRepository
 from app.repositories.classes import ClassRepository
@@ -79,9 +80,7 @@ async def import_students(file: UploadFile = File(...), db: Session = Depends(ge
 
 @router.get("/import/template")
 def download_template():
-    from openpyxl import Workbook
     from openpyxl.worksheet.datavalidation import DataValidation
-    from fastapi.responses import StreamingResponse
 
     wb = Workbook()
     ws = wb.active
@@ -117,4 +116,45 @@ def download_template():
         buf,
         media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         headers={"Content-Disposition": "attachment; filename=student_import_template.xlsx"}
+    )
+
+
+@router.get("/export")
+def export_students(class_id: str | None = Query(None), db: Session = Depends(get_db)):
+    students = StudentRepository(db).list_all(class_id=class_id)
+
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "学生数据"
+
+    headers = ["姓名", "学号", "班级", "手机", "风险等级"]
+    ws.append(headers)
+
+    class_repo = ClassRepository(db)
+    class_map = {c.id: c.name for c in class_repo.list_all()}
+    risk_labels = {"low": "低", "medium": "中", "high": "高"}
+
+    for s in students:
+        ws.append([
+            s.name,
+            s.student_id,
+            class_map.get(s.class_id, "") if s.class_id else "",
+            s.phone,
+            risk_labels.get(s.risk_level, s.risk_level),
+        ])
+
+    ws.column_dimensions['A'].width = 12
+    ws.column_dimensions['B'].width = 14
+    ws.column_dimensions['C'].width = 20
+    ws.column_dimensions['D'].width = 16
+    ws.column_dimensions['E'].width = 12
+
+    buf = io.BytesIO()
+    wb.save(buf)
+    buf.seek(0)
+
+    return StreamingResponse(
+        buf,
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers={"Content-Disposition": "attachment; filename=students_export.xlsx"}
     )
