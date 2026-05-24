@@ -11,22 +11,54 @@
   --el-color-primary-light-7: #d9f0e4;
   --el-color-primary-light-8: #e5f5ed;
   --el-color-primary-light-9: #f2faf6;
+  --el-color-primary-dark-1: #71b490;
   --el-color-primary-dark-2: #5daa80;
+  --el-color-primary-dark-3: #4b8e6a;
+  --el-color-primary-dark-4: #3e7a5c;
+  --el-color-primary-dark-5: #32664d;
+  --el-color-primary-dark-6: #26523e;
+  --el-color-primary-dark-7: #1a3e2f;
+  --el-color-primary-dark-8: #0e2a20;
+  --el-color-primary-dark-9: #021611;
 
-  /* 成功色 — 保留绿色调 */
+  /* 成功色 */
   --el-color-success: #67c23a;
+  --el-color-success-light-1: #7cca53;
+  --el-color-success-light-2: #89d264;
   --el-color-success-light-3: #95d475;
+  --el-color-success-light-4: #a2da83;
   --el-color-success-light-5: #b3e19d;
+  --el-color-success-light-6: #c4e8b3;
+  --el-color-success-light-7: #d5efc9;
+  --el-color-success-light-8: #e6f5df;
+  --el-color-success-light-9: #f7fcf5;
+  --el-color-success-dark-2: #4ea32e;
 
   /* 警告色 */
   --el-color-warning: #e6a23c;
+  --el-color-warning-light-1: #e9ae54;
+  --el-color-warning-light-2: #ecb86a;
   --el-color-warning-light-3: #eebe77;
+  --el-color-warning-light-4: #f1c98d;
   --el-color-warning-light-5: #f3d19e;
+  --el-color-warning-light-6: #f5d9af;
+  --el-color-warning-light-7: #f7e2c0;
+  --el-color-warning-light-8: #faf0e0;
+  --el-color-warning-light-9: #fcf8f0;
+  --el-color-warning-dark-2: #c88830;
 
   /* 危险色 */
   --el-color-danger: #f56c6c;
+  --el-color-danger-light-1: #f67e7e;
+  --el-color-danger-light-2: #f78e8e;
   --el-color-danger-light-3: #f89898;
+  --el-color-danger-light-4: #f9a8a8;
   --el-color-danger-light-5: #fab6b6;
+  --el-color-danger-light-6: #fbc4c4;
+  --el-color-danger-light-7: #fcd2d2;
+  --el-color-danger-light-8: #fde0e0;
+  --el-color-danger-light-9: #fef4f4;
+  --el-color-danger-dark-2: #d15656;
 
   /* 信息色 */
   --el-color-info: #909399;
