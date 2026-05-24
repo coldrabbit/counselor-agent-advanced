@@ -137,6 +137,24 @@ async function exportPDF(type: string) {
     URL.revokeObjectURL(url)
   } catch { /* ignore */ }
 }
+
+async function handleOCRUpload(options: any) {
+  const formData = new FormData()
+  formData.append('file', options.file)
+  try {
+    const resp = await axios.post('/api/ocr/recognize', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    })
+    if (resp.data.success && resp.data.text) {
+      event.value = event.value ? event.value + '\n' + resp.data.text : resp.data.text
+      ElMessage.success('文字识别完成，已添加到输入框')
+    } else {
+      ElMessage.warning('未能识别到文字')
+    }
+  } catch (e: any) {
+    ElMessage.error(e.response?.data?.detail || '识别失败')
+  }
+}
 </script>
 
 <template>
@@ -166,6 +184,11 @@ async function exportPDF(type: string) {
       <template #header>
         <span>事件描述</span>
       </template>
+      <div style="margin-bottom:12px">
+        <el-upload :show-file-list="false" :auto-upload="false" accept="image/*" :on-change="handleOCRUpload">
+          <el-button size="small">📷 拍照/图片识别文字</el-button>
+        </el-upload>
+      </div>
       <div style="margin-bottom:12px;display:flex;align-items:center;gap:8px">
         <el-switch v-model="batchMode" active-text="批量模式" @change="() => { if(batchMode) loadStudentsForBatch() }" />
       </div>
