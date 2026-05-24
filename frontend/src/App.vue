@@ -15,7 +15,7 @@ function handleLogout() {
 <template>
   <div class="app">
     <nav v-if="route.name !== 'login'" class="app-nav">
-      <router-link to="/">首页</router-link>
+      <router-link to="/" class="brand">Counselor OS</router-link>
       <router-link to="/notices">通知生成器</router-link>
       <router-link to="/talk-record">谈心谈话</router-link>
       <router-link to="/students">学生管理</router-link>
@@ -54,14 +54,17 @@ body {
   z-index: 100;
 }
 
-.app-nav::before {
-  content: 'Counselor OS';
-  font-weight: 800;
-  font-size: 16px;
-  color: #fff;
+.brand {
+  font-weight: 800 !important;
+  font-size: 16px !important;
+  color: #fff !important;
   letter-spacing: 0.5px;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  padding: 0 !important;
+  margin-right: 8px;
 }
+.brand:hover { background: none !important; }
+.brand.router-link-active { background: none !important; }
 
 .app-nav a {
   padding: 7px 20px;
