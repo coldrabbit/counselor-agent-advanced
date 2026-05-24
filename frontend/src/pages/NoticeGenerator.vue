@@ -16,6 +16,13 @@ const generating = ref(false)
 const showSettings = ref(false)
 const showPreDialog = ref(false)
 
+const batchMode = ref(false)
+const batchStudentIds = ref<string[]>([])
+const batchStudents = ref<Array<{id:string,name:string,student_id:string,class_id:string|null}>>([])
+const batchClasses = ref<Array<{id:string,name:string}>>([])
+const batchClassFilter = ref('')
+const batchLoading = ref(false)
+
 const templates = ref<TemplateItem[]>([])
 const selectedTemplate = ref('')
 const showTemplateDialog = ref(false)
@@ -32,6 +39,34 @@ function selectTemplate(id: string) {
   selectedTemplate.value = ''
 }
 
+async function loadClasses() {
+  const resp = await axios.get('/api/classes')
+  batchClasses.value = resp.data
+}
+
+async function loadStudentsForBatch() {
+  const params: Record<string, string> = {}
+  if (batchClassFilter.value) params.class_id = batchClassFilter.value
+  const resp = await axios.get('/api/students', { params })
+  batchStudents.value = resp.data
+}
+
+async function handleBatchGenerate() {
+  if (!event.value.trim()) { ElMessage.warning('请输入事件描述'); return }
+  if (batchStudentIds.value.length === 0) { ElMessage.warning('请选择学生'); return }
+  batchLoading.value = true
+  try {
+    const resp = await axios.post('/api/notices/batch-generate', {
+      event: event.value, student_ids: batchStudentIds.value,
+    })
+    const data = resp.data
+    ElMessage.success(`批量生成完成：成功 ${data.created} 条，失败 ${data.failed} 条`)
+    batchStudentIds.value = []
+  } catch (e: any) {
+    ElMessage.error(e.response?.data?.detail || '批量生成失败')
+  } finally { batchLoading.value = false }
+}
+
 async function saveTemplate() {
   if (!templateForm.value.name.trim() || !templateForm.value.content.trim()) return
   await axios.post('/api/templates', { ...templateForm.value })
@@ -43,6 +78,7 @@ async function saveTemplate() {
 onMounted(() => {
   store.fetchProfile()
   fetchTemplates()
+  loadClasses()
 })
 
 function handleGenerateClick() {
@@ -103,6 +139,9 @@ async function handleApprove() {
       <template #header>
         <span>事件描述</span>
       </template>
+      <div style="margin-bottom:12px;display:flex;align-items:center;gap:8px">
+        <el-switch v-model="batchMode" active-text="批量模式" @change="() => { if(batchMode) loadStudentsForBatch() }" />
+      </div>
       <div style="margin-bottom:12px;display:flex;gap:8px;align-items:center">
         <el-select v-model="selectedTemplate" placeholder="使用模板..." clearable size="small" style="width:200px" @change="selectTemplate">
           <el-option v-for="t in templates" :key="t.id" :label="`[${t.category}] ${t.name}`" :value="t.id" />
@@ -115,13 +154,34 @@ async function handleApprove() {
         :rows="3"
         placeholder="例如：明天下午 3 点召开防诈骗班会，地点 A203，全员参加"
       />
+      <div v-if="batchMode" style="margin-top:12px">
+        <div style="display:flex;gap:8px;margin-bottom:8px">
+          <el-select v-model="batchClassFilter" placeholder="按班级筛选" clearable size="small" style="width:200px" @change="loadStudentsForBatch">
+            <el-option label="全部" value="" />
+            <el-option v-for="c in batchClasses" :key="c.id" :label="c.name" :value="c.id" />
+          </el-select>
+        </div>
+        <el-select v-model="batchStudentIds" multiple placeholder="选择学生..." style="width:100%" filterable>
+          <el-option v-for="s in batchStudents" :key="s.id" :label="`${s.name} (${s.student_id})`" :value="s.id" />
+        </el-select>
+      </div>
       <el-button
+        v-if="!batchMode"
         type="primary"
         :loading="generating"
         class="generate-btn"
         @click="handleGenerateClick"
       >
         {{ generating ? 'AI 生成中...' : '生成通知' }}
+      </el-button>
+      <el-button
+        v-if="batchMode"
+        type="primary"
+        :loading="batchLoading"
+        class="generate-btn"
+        @click="handleBatchGenerate"
+      >
+        {{ batchLoading ? '批量生成中...' : `批量生成 (${batchStudentIds.length}人)` }}
       </el-button>
     </el-card>
 

@@ -1,8 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from pydantic import BaseModel
 from app.db.database import get_db
 from app.schemas.notice import GenerateNoticeRequest, NoticeResponse, NoticeListItem
-from app.repositories import NoticeRepository, TaskRepository, CounselorRepository
+from app.repositories import NoticeRepository, TaskRepository, CounselorRepository, StudentRepository
 from app.tasks.notice_task import generate_notice_task
 import json
 
@@ -83,3 +84,62 @@ def reject_notice(notice_id: str, db: Session = Depends(get_db)):
     if not notice:
         raise HTTPException(status_code=404, detail="通知不存在")
     return repo.update_status(notice, "DRAFT")
+
+
+class BatchGenerateRequest(BaseModel):
+    event: str
+    time: str = ""
+    location: str = ""
+    participants: str = ""
+    student_ids: list[str]
+
+
+@router.post("/batch-generate")
+def batch_generate(req: BatchGenerateRequest, db: Session = Depends(get_db)):
+    notice_repo = NoticeRepository(db)
+    task_repo = TaskRepository(db)
+    counselor_repo = CounselorRepository(db)
+    student_repo = StudentRepository(db)
+
+    profile = counselor_repo.get_first()
+    profile_dict = counselor_repo.to_dict(profile) if profile else None
+
+    created = 0
+    failed = 0
+    errors = []
+
+    for student_id in req.student_ids:
+        student = student_repo.get_by_id(student_id)
+        student_name = student.name if student else "未知学生"
+
+        task = task_repo.create_task(task_type="batch_generate_notice", task_input=req.event)
+
+        personalized_event = f"{req.event}（学生：{student_name}）"
+        result = generate_notice_task(
+            event=personalized_event,
+            time=req.time,
+            location=req.location,
+            participants=req.participants,
+            counselor_profile=profile_dict,
+        )
+
+        if result.get("success"):
+            notice_repo.create(
+                title=result.get("title", ""),
+                event=personalized_event,
+                formal_notice=result.get("formal_notice", ""),
+                wechat_notice=result.get("wechat_notice", ""),
+                parent_notice=result.get("parent_notice", ""),
+                sms_notice=result.get("sms_notice", ""),
+                status="WAITING_APPROVAL",
+            )
+            task_repo.mark_success(task, output=json.dumps(result, ensure_ascii=False),
+                                   model=result.get("model", ""), token_usage=result.get("token_usage", 0),
+                                   duration_ms=result.get("duration_ms", 0))
+            created += 1
+        else:
+            task_repo.mark_failed(task, result.get("error", "Unknown error"))
+            failed += 1
+            errors.append({"student_id": student_id, "name": student_name, "error": result.get("error", "")})
+
+    return {"total": len(req.student_ids), "created": created, "failed": failed, "errors": errors}
