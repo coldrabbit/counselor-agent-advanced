@@ -1,9 +1,14 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
+import axios from 'axios'
 import { useNoticeStore } from '../stores/notice'
 import CounselorDrawer from '../components/CounselorDrawer.vue'
 import PreGenerateDialog from '../components/PreGenerateDialog.vue'
+
+interface TemplateItem {
+  id: string; name: string; category: string; content: string;
+}
 
 const store = useNoticeStore()
 const event = ref('')
@@ -11,8 +16,33 @@ const generating = ref(false)
 const showSettings = ref(false)
 const showPreDialog = ref(false)
 
+const templates = ref<TemplateItem[]>([])
+const selectedTemplate = ref('')
+const showTemplateDialog = ref(false)
+const templateForm = ref({ name: '', category: '通用', content: '' })
+
+async function fetchTemplates() {
+  const resp = await axios.get('/api/templates')
+  templates.value = resp.data
+}
+
+function selectTemplate(id: string) {
+  const tmpl = templates.value.find(t => t.id === id)
+  if (tmpl) { event.value = tmpl.content }
+  selectedTemplate.value = ''
+}
+
+async function saveTemplate() {
+  if (!templateForm.value.name.trim() || !templateForm.value.content.trim()) return
+  await axios.post('/api/templates', { ...templateForm.value })
+  showTemplateDialog.value = false
+  templateForm.value = { name: '', category: '通用', content: '' }
+  await fetchTemplates()
+}
+
 onMounted(() => {
   store.fetchProfile()
+  fetchTemplates()
 })
 
 function handleGenerateClick() {
@@ -73,6 +103,12 @@ async function handleApprove() {
       <template #header>
         <span>事件描述</span>
       </template>
+      <div style="margin-bottom:12px;display:flex;gap:8px;align-items:center">
+        <el-select v-model="selectedTemplate" placeholder="使用模板..." clearable size="small" style="width:200px" @change="selectTemplate">
+          <el-option v-for="t in templates" :key="t.id" :label="`[${t.category}] ${t.name}`" :value="t.id" />
+        </el-select>
+        <el-button size="small" @click="showTemplateDialog = true">+ 管理模板</el-button>
+      </div>
       <el-input
         v-model="event"
         type="textarea"
@@ -134,6 +170,40 @@ async function handleApprove() {
       :initial-event="event"
       @generate="handleGenerate"
     />
+
+    <!-- Template Management Dialog -->
+    <el-dialog v-model="showTemplateDialog" title="管理模板" width="500px">
+      <div style="margin-bottom:16px">
+        <el-form label-position="top">
+          <el-form-item label="模板名称" required>
+            <el-input v-model="templateForm.name" placeholder="例如：防诈骗班会通知" />
+          </el-form-item>
+          <el-form-item label="分类">
+            <el-select v-model="templateForm.category" style="width:100%">
+              <el-option label="安全" value="安全" />
+              <el-option label="学风" value="学风" />
+              <el-option label="活动" value="活动" />
+              <el-option label="心理健康" value="心理健康" />
+              <el-option label="就业" value="就业" />
+              <el-option label="通用" value="通用" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="事件描述" required>
+            <el-input v-model="templateForm.content" type="textarea" :rows="3" placeholder="输入模板化的事件描述" />
+          </el-form-item>
+          <el-button type="primary" @click="saveTemplate" style="width:100%">保存模板</el-button>
+        </el-form>
+      </div>
+      <el-table :data="templates" size="small" max-height="300">
+        <el-table-column prop="name" label="名称" width="180" />
+        <el-table-column prop="category" label="分类" width="100" />
+        <el-table-column label="操作" width="80">
+          <template #default="{ row }">
+            <el-button size="small" type="danger" @click="async () => { await axios.delete(`/api/templates/${row.id}`); await fetchTemplates(); }">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
   </div>
 </template>
 

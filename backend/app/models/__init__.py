@@ -5,6 +5,7 @@ from app.models.counselor import CounselorProfile
 from app.models.talk_record import TalkRecord
 from app.models.class_model import Class
 from app.models.student import Student
+from app.models.template import NoticeTemplate
 
 
 def init_db():

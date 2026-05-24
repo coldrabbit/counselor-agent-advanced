@@ -7,6 +7,7 @@ from app.api.talk_records import router as talk_records_router
 from app.api.classes import router as class_router
 from app.api.students import router as student_router
 from app.api.imports import router as import_router
+from app.api.templates import router as template_router
 from alembic.config import Config as AlembicConfig
 from alembic import command
 
@@ -28,6 +29,7 @@ def create_app() -> FastAPI:
     app.include_router(class_router, prefix="/api")
     app.include_router(student_router, prefix="/api")
     app.include_router(import_router, prefix="/api")
+    app.include_router(template_router, prefix="/api")
 
     @app.on_event("startup")
     def on_startup():
