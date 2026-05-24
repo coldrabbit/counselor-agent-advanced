@@ -19,8 +19,8 @@ def engine():
 
 @pytest.fixture
 def db_session(engine):
-    SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-    session = SessionLocal()
+    TestSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+    session = TestSessionLocal()
     try:
         yield session
     finally:
@@ -28,7 +28,13 @@ def db_session(engine):
 
 
 @pytest.fixture
-def client(db_session):
+def client(db_session, engine):
+    # Override app.db.database.SessionLocal so MCP tools use the test database
+    import app.db.database as db_module
+    TestSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+    original = db_module.SessionLocal
+    db_module.SessionLocal = TestSessionLocal
+
     app = create_app()
 
     def override_get_db():
@@ -40,6 +46,8 @@ def client(db_session):
     app.dependency_overrides[get_db] = override_get_db
     with TestClient(app) as test_client:
         yield test_client
+
+    db_module.SessionLocal = original
 
 
 @pytest.fixture

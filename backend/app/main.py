@@ -12,6 +12,7 @@ from app.api.risks import router as risk_router
 from app.api.analysis import router as analysis_router
 from app.api.export import router as export_router
 from app.api.ocr import router as ocr_router
+from app.api.mcp import router as mcp_router
 from alembic.config import Config as AlembicConfig
 from alembic import command
 
@@ -38,9 +39,11 @@ def create_app() -> FastAPI:
     app.include_router(analysis_router, prefix="/api")
     app.include_router(export_router, prefix="/api")
     app.include_router(ocr_router, prefix="/api")
+    app.include_router(mcp_router, prefix="/api")
 
     @app.on_event("startup")
     def on_startup():
+        import app.tools.builtin_tools  # noqa: F401 — 确保 MCP 工具在启动时注册
         alembic_cfg = AlembicConfig("alembic.ini")
         command.upgrade(alembic_cfg, "head")
 
