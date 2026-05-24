@@ -15,6 +15,7 @@ from app.api.ocr import router as ocr_router
 from app.api.mcp import router as mcp_router
 from app.api.notify import router as notify_router
 from app.api.documents import router as document_router
+from app.api.agents import router as agent_router
 from alembic.config import Config as AlembicConfig
 from alembic import command
 
@@ -44,10 +45,12 @@ def create_app() -> FastAPI:
     app.include_router(mcp_router, prefix="/api")
     app.include_router(notify_router, prefix="/api")
     app.include_router(document_router, prefix="/api")
+    app.include_router(agent_router, prefix="/api")
 
     @app.on_event("startup")
     def on_startup():
         import app.tools.builtin_tools  # noqa: F401 — 确保 MCP 工具在启动时注册
+        import app.agents.defined_agents  # noqa: F401 — 确保 AI Agent 在启动时注册
         alembic_cfg = AlembicConfig("alembic.ini")
         command.upgrade(alembic_cfg, "head")
 
