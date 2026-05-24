@@ -23,6 +23,11 @@ const router = createRouter({
       name: 'risks',
       component: () => import('../pages/RiskDashboard.vue'),
     },
+    {
+      path: '/analysis',
+      name: 'analysis',
+      component: () => import('../pages/AcademicAnalysis.vue'),
+    },
   ],
 })
 
