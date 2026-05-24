@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from openpyxl import load_workbook
 from app.db.database import get_db
 from app.services.ai.client import AIService
+from app.prompts.risk import build_risk_analysis_prompt
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/analysis", tags=["analysis"])
@@ -29,20 +30,7 @@ async def analyze_academic(file: UploadFile = File(...), db: Session = Depends(g
 
     data_text = json.dumps(data_rows, ensure_ascii=False, indent=2)
 
-    system_prompt = """你是一位高校学情分析专家。根据提供的学生成绩和考勤数据，生成学情分析报告。
-
-请以 JSON 格式输出，字段如下：
-- "class_overview": 班级整体情况总结（100-200字）
-- "abnormal_students": 异常学生列表，每项含 name(姓名)、issue(问题描述)、severity(严重程度: high/medium/low)
-- "academic_advice": 学风建设建议（3-5条）
-- "grade_warnings": 学业预警学生列表，每项含 name(姓名)、course(课程)、risk(风险描述)
-- "summary": 一句话总结（20字以内）
-
-异常判定标准：
-- 成绩 < 60 分 → 高风险
-- 成绩 60-70 分 → 中风险
-- 缺勤 > 3 次 → 需关注
-- 请假 > 5 次 → 需关注"""
+    system_prompt = build_risk_analysis_prompt()
 
     user_message = f"以下是一个班级的学生成绩和考勤数据，请分析：\n\n{data_text}"
 
