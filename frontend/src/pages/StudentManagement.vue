@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { ElMessageBox } from 'element-plus'
+import { ElMessageBox, ElMessage } from 'element-plus'
 import { useStudentStore } from '../stores/student'
 import type { StudentItem } from '../api/students'
+import axios from 'axios'
 
 const store = useStudentStore()
 
@@ -16,6 +17,31 @@ const showClassDialog = ref(false)
 const newClassName = ref('')
 const newClassGrade = ref('')
 const newClassMajor = ref('')
+
+const importing = ref(false)
+
+async function handleImportFile(options: any) {
+  importing.value = true
+  try {
+    const formData = new FormData()
+    formData.append('file', options.file)
+    const resp = await axios.post('/api/students/import', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    })
+    const data = resp.data
+    ElMessage.success(`导入完成：成功 ${data.created} 条，跳过 ${data.skipped} 条`)
+    if (data.errors.length > 0) {
+      const msg = data.errors.slice(0, 5).map((e: any) => `第${e.row}行: ${e.error}`).join('; ')
+      ElMessage.warning(`部分失败: ${msg}`)
+    }
+    store.fetchStudents()
+    store.fetchClasses()
+  } catch (e: any) {
+    ElMessage.error(e.response?.data?.detail || '导入失败')
+  } finally {
+    importing.value = false
+  }
+}
 
 const form = ref({ name: '', student_id: '', class_id: '', phone: '', risk_level: 'low' })
 
@@ -109,6 +135,14 @@ async function handleAddClass() {
       <div style="flex:1" />
       <el-button type="primary" @click="openCreate">+ 添加学生</el-button>
       <el-button @click="showClassDialog = true">+ 添加班级</el-button>
+      <el-upload
+        :show-file-list="false"
+        :auto-upload="false"
+        accept=".xlsx,.xls"
+        :on-change="handleImportFile"
+      >
+        <el-button :loading="importing">📥 导入 Excel</el-button>
+      </el-upload>
     </div>
 
     <el-table :data="store.students" v-loading="store.loading" class="student-table">
