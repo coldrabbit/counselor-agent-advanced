@@ -31,20 +31,19 @@ def generate_talk_record(req: GenerateTalkRecordRequest, db: Session = Depends(g
     )
 
     if result.get("success"):
-        data = result["record"]
         record = record_repo.create(
             student_name=req.student_name,
             student_id=req.student_id,
             situation=req.situation,
-            conversation_record=data.get("conversation_record", ""),
-            risk_level=data.get("risk_level", "medium"),
-            follow_up_advice=data.get("follow_up_advice", ""),
-            parent_advice=data.get("parent_advice", ""),
+            conversation_record=result.get("conversation_record", ""),
+            risk_level=result.get("risk_level", "medium"),
+            follow_up_advice=result.get("follow_up_advice", ""),
+            parent_advice=result.get("parent_advice", ""),
             status="WAITING_APPROVAL",
         )
         task_repo.mark_success(
             task,
-            output=json.dumps(data, ensure_ascii=False),
+            output=json.dumps(result, ensure_ascii=False),
             model=result.get("model", ""),
             token_usage=result.get("token_usage", 0),
             duration_ms=result.get("duration_ms", 0),

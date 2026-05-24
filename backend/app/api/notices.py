@@ -32,19 +32,18 @@ def generate_notice(req: GenerateNoticeRequest, db: Session = Depends(get_db)):
     )
 
     if result.get("success"):
-        notice_data = result["notice"]
         notice = notice_repo.create(
-            title=notice_data["title"],
+            title=result.get("title", ""),
             event=req.event,
-            formal_notice=notice_data.get("formal_notice", ""),
-            wechat_notice=notice_data.get("wechat_notice", ""),
-            parent_notice=notice_data.get("parent_notice", ""),
-            sms_notice=notice_data.get("sms_notice", ""),
+            formal_notice=result.get("formal_notice", ""),
+            wechat_notice=result.get("wechat_notice", ""),
+            parent_notice=result.get("parent_notice", ""),
+            sms_notice=result.get("sms_notice", ""),
             status="WAITING_APPROVAL",
         )
         task_repo.mark_success(
             task,
-            output=json.dumps(notice_data, ensure_ascii=False),
+            output=json.dumps(result, ensure_ascii=False),
             model=result.get("model", ""),
             token_usage=result.get("token_usage", 0),
             duration_ms=result.get("duration_ms", 0),
