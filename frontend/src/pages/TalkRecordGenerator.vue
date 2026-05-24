@@ -36,14 +36,24 @@ async function handleGenerate() {
   }
 }
 
+const reviewComment = ref('')
+
 async function handleApprove() {
   if (!store.currentRecord) return
   try {
-    await store.approve(store.currentRecord.id)
+    await axios.put(`/api/talk-records/${store.currentRecord.id}/approve`, { comment: reviewComment.value })
     ElMessage.success('已审核通过')
-  } catch {
-    ElMessage.error(store.error || '审核失败')
-  }
+    store.currentRecord.status = 'APPROVED'
+  } catch { ElMessage.error(store.error || '审核失败') }
+}
+
+async function handleReject() {
+  if (!store.currentRecord) return
+  try {
+    await axios.put(`/api/talk-records/${store.currentRecord.id}/reject`, { comment: reviewComment.value })
+    ElMessage.success('已退回修改')
+    store.currentRecord.status = 'DRAFT'
+  } catch { ElMessage.error(store.error || '操作失败') }
 }
 
 async function exportPDF(type: string) {
@@ -122,13 +132,23 @@ async function exportPDF(type: string) {
       </el-tabs>
 
       <div class="actions">
+        <el-input v-if="store.currentRecord && store.currentRecord.status !== 'APPROVED'"
+          v-model="reviewComment" placeholder="审核意见（可选）" size="large" style="width:300px" />
         <el-button
-          v-if="store.currentRecord.status !== 'APPROVED'"
+          v-if="store.currentRecord && store.currentRecord.status !== 'APPROVED'"
           type="success"
           size="large"
           @click="handleApprove"
         >
           审核通过
+        </el-button>
+        <el-button
+          v-if="store.currentRecord && store.currentRecord.status !== 'APPROVED'"
+          type="warning"
+          size="large"
+          @click="handleReject"
+        >
+          退回修改
         </el-button>
         <el-button size="large" @click="exportPDF('record')">导出 PDF</el-button>
       </div>

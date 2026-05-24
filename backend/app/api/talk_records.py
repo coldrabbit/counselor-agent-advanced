@@ -1,5 +1,7 @@
+from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from pydantic import BaseModel
 from app.db.database import get_db
 from app.schemas.talk_record import GenerateTalkRecordRequest, TalkRecordResponse, TalkRecordListItem
 from app.repositories import TalkRecordRepository, TaskRepository, CounselorRepository
@@ -7,6 +9,10 @@ from app.tasks.talk_record_task import generate_talk_record_task
 import json
 
 router = APIRouter(prefix="/talk-records", tags=["talk_records"])
+
+
+class ReviewRequest(BaseModel):
+    comment: str = ""
 
 
 @router.post("/generate", response_model=TalkRecordResponse)
@@ -68,18 +74,18 @@ def get_talk_record(record_id: str, db: Session = Depends(get_db)):
 
 
 @router.put("/{record_id}/approve", response_model=TalkRecordResponse)
-def approve_talk_record(record_id: str, db: Session = Depends(get_db)):
+def approve_talk_record(record_id: str, req: ReviewRequest = ReviewRequest(), db: Session = Depends(get_db)):
     repo = TalkRecordRepository(db)
     record = repo.get_by_id(record_id)
     if not record:
         raise HTTPException(status_code=404, detail="谈话记录不存在")
-    return repo.update_status(record, "APPROVED")
+    return repo.update(record, status="APPROVED", review_comment=req.comment or None, reviewed_at=datetime.utcnow())
 
 
 @router.put("/{record_id}/reject", response_model=TalkRecordResponse)
-def reject_talk_record(record_id: str, db: Session = Depends(get_db)):
+def reject_talk_record(record_id: str, req: ReviewRequest = ReviewRequest(), db: Session = Depends(get_db)):
     repo = TalkRecordRepository(db)
     record = repo.get_by_id(record_id)
     if not record:
         raise HTTPException(status_code=404, detail="谈话记录不存在")
-    return repo.update_status(record, "DRAFT")
+    return repo.update(record, status="DRAFT", review_comment=req.comment or None, reviewed_at=datetime.utcnow())

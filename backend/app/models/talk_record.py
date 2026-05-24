@@ -27,6 +27,8 @@ class TalkRecord(Base):
     follow_up_advice: Mapped[str] = mapped_column(Text, nullable=False)
     parent_advice: Mapped[str] = mapped_column(Text, nullable=False)
     status: Mapped[TalkRecordStatus] = mapped_column(SAEnum(TalkRecordStatus), default=TalkRecordStatus.DRAFT, nullable=False)
+    review_comment: Mapped[str | None] = mapped_column(Text, nullable=True)
+    reviewed_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     created_by: Mapped[str] = mapped_column(String(128), default="")
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

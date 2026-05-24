@@ -101,14 +101,24 @@ async function handleGenerate(payload: { event: string; time: string; location: 
   }
 }
 
+const reviewComment = ref('')
+
 async function handleApprove() {
   if (!store.currentNotice) return
   try {
-    await store.approve(store.currentNotice.id)
+    await axios.put(`/api/notices/${store.currentNotice.id}/approve`, { comment: reviewComment.value })
     ElMessage.success('通知已审核通过')
-  } catch {
-    ElMessage.error(store.error || '审核失败')
-  }
+    store.currentNotice.status = 'APPROVED'
+  } catch { ElMessage.error(store.error || '审核失败') }
+}
+
+async function handleReject() {
+  if (!store.currentNotice) return
+  try {
+    await axios.put(`/api/notices/${store.currentNotice.id}/reject`, { comment: reviewComment.value })
+    ElMessage.success('已退回修改')
+    store.currentNotice.status = 'DRAFT'
+  } catch { ElMessage.error(store.error || '操作失败') }
 }
 
 async function exportPDF(type: string) {
@@ -227,13 +237,23 @@ async function exportPDF(type: string) {
       </el-tabs>
 
       <div class="actions">
+        <el-input v-if="store.currentNotice && store.currentNotice.status !== 'APPROVED'"
+          v-model="reviewComment" placeholder="审核意见（可选）" size="large" style="width:300px" />
         <el-button
-          v-if="store.currentNotice.status !== 'APPROVED'"
+          v-if="store.currentNotice && store.currentNotice.status !== 'APPROVED'"
           type="success"
           size="large"
           @click="handleApprove"
         >
           审核通过
+        </el-button>
+        <el-button
+          v-if="store.currentNotice && store.currentNotice.status !== 'APPROVED'"
+          type="warning"
+          size="large"
+          @click="handleReject"
+        >
+          退回修改
         </el-button>
         <el-button size="large" @click="exportPDF('notice')">导出 PDF</el-button>
       </div>

@@ -18,6 +18,8 @@ class TalkRecordResponse(BaseModel):
     follow_up_advice: str
     parent_advice: str
     status: str
+    review_comment: str | None = None
+    reviewed_at: datetime | None = None
     created_by: str
     created_at: datetime
     updated_at: datetime

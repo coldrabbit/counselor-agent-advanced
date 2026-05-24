@@ -1,3 +1,4 @@
+from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
@@ -8,6 +9,10 @@ from app.tasks.notice_task import generate_notice_task
 import json
 
 router = APIRouter(prefix="/notices", tags=["notices"])
+
+
+class ReviewRequest(BaseModel):
+    comment: str = ""
 
 
 @router.post("/generate", response_model=NoticeResponse)
@@ -69,21 +74,21 @@ def get_notice(notice_id: str, db: Session = Depends(get_db)):
 
 
 @router.put("/{notice_id}/approve", response_model=NoticeResponse)
-def approve_notice(notice_id: str, db: Session = Depends(get_db)):
+def approve_notice(notice_id: str, req: ReviewRequest = ReviewRequest(), db: Session = Depends(get_db)):
     repo = NoticeRepository(db)
     notice = repo.get_by_id(notice_id)
     if not notice:
         raise HTTPException(status_code=404, detail="通知不存在")
-    return repo.update_status(notice, "APPROVED")
+    return repo.update(notice, status="APPROVED", review_comment=req.comment or None, reviewed_at=datetime.utcnow())
 
 
 @router.put("/{notice_id}/reject", response_model=NoticeResponse)
-def reject_notice(notice_id: str, db: Session = Depends(get_db)):
+def reject_notice(notice_id: str, req: ReviewRequest = ReviewRequest(), db: Session = Depends(get_db)):
     repo = NoticeRepository(db)
     notice = repo.get_by_id(notice_id)
     if not notice:
         raise HTTPException(status_code=404, detail="通知不存在")
-    return repo.update_status(notice, "DRAFT")
+    return repo.update(notice, status="DRAFT", review_comment=req.comment or None, reviewed_at=datetime.utcnow())
 
 
 class BatchGenerateRequest(BaseModel):
