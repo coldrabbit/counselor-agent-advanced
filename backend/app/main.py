@@ -16,6 +16,7 @@ from app.api.mcp import router as mcp_router
 from app.api.notify import router as notify_router
 from app.api.documents import router as document_router
 from app.api.agents import router as agent_router
+from app.api.engine import router as engine_router
 from alembic.config import Config as AlembicConfig
 from alembic import command
 
@@ -46,6 +47,7 @@ def create_app() -> FastAPI:
     app.include_router(notify_router, prefix="/api")
     app.include_router(document_router, prefix="/api")
     app.include_router(agent_router, prefix="/api")
+    app.include_router(engine_router, prefix="/api")
 
     @app.on_event("startup")
     def on_startup():
