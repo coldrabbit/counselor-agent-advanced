@@ -16,17 +16,17 @@
 @keyframes hover-lift {
   to {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(126, 168, 160, 0.25);
+    box-shadow: 0 6px 20px rgba(var(--el-color-primary-r), var(--el-color-primary-g), var(--el-color-primary-b), 0.25);
   }
 }
 
 /* 脉冲发光 */
 @keyframes pulse-glow {
   0%, 100% {
-    box-shadow: 0 0 0 0 rgba(126, 168, 160, 0.2);
+    box-shadow: 0 0 0 0 rgba(var(--el-color-primary-r), var(--el-color-primary-g), var(--el-color-primary-b), 0.2);
   }
   50% {
-    box-shadow: 0 0 0 8px rgba(126, 168, 160, 0);
+    box-shadow: 0 0 0 8px rgba(var(--el-color-primary-r), var(--el-color-primary-g), var(--el-color-primary-b), 0);
   }
 }
 
@@ -67,10 +67,10 @@
 }
 
 .anim-hover-lift {
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  transition: transform 0.25s ease-out, box-shadow 0.25s ease-out;
 }
 .anim-hover-lift:hover {
-  animation: hover-lift 0.25s ease forwards;
+  animation: hover-lift 0.25s ease-out forwards;
 }
 
 .anim-pulse-glow {

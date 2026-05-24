@@ -2,6 +2,9 @@
 :root {
   /* 主色 — 青灰绿 */
   --el-color-primary: #7ec8a0;
+  --el-color-primary-r: 126;
+  --el-color-primary-g: 200;
+  --el-color-primary-b: 160;
   --el-color-primary-light-1: #8dd0ad;
   --el-color-primary-light-2: #9ad7b7;
   --el-color-primary-light-3: #a5dbbf;
