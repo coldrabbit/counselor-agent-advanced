@@ -110,6 +110,23 @@ async function handleApprove() {
     ElMessage.error(store.error || '审核失败')
   }
 }
+
+async function exportPDF(type: string) {
+  let title = ''
+  let content = ''
+  if (type === 'notice' && store.currentNotice) {
+    title = store.currentNotice.title || '通知'
+    content = `【正式通知】\n${store.currentNotice.formal_notice}\n\n【微信群通知】\n${store.currentNotice.wechat_notice}\n\n【家长通知】\n${store.currentNotice.parent_notice}\n\n【短信简版】\n${store.currentNotice.sms_notice}`
+  }
+  if (!title) return
+  try {
+    const resp = await axios.post('/api/export/pdf', { title, content }, { responseType: 'blob' })
+    const url = URL.createObjectURL(resp.data)
+    const a = document.createElement('a')
+    a.href = url; a.download = `${title}.pdf`; a.click()
+    URL.revokeObjectURL(url)
+  } catch { /* ignore */ }
+}
 </script>
 
 <template>
@@ -218,6 +235,7 @@ async function handleApprove() {
         >
           审核通过
         </el-button>
+        <el-button size="large" @click="exportPDF('notice')">导出 PDF</el-button>
       </div>
     </div>
 

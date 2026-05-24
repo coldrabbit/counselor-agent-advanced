@@ -31,6 +31,30 @@ async function handleUpload(options: any) {
 function severityType(s: string) { return s === 'high' ? 'danger' : s === 'medium' ? 'warning' : 'success' }
 function severityLabel(s: string) { return s === 'high' ? '严重' : s === 'medium' ? '需关注' : '一般' }
 
+async function exportPDF() {
+  if (!result.value) return
+  let content = ''
+  if (result.value.class_overview) content += `【班级总览】\n${result.value.class_overview}\n\n`
+  if (result.value.abnormal_students?.length) {
+    content += `【异常学生】\n${result.value.abnormal_students.map((s:any) => `• ${s.name}: ${s.issue} (${s.severity})`).join('\n')}\n\n`
+  }
+  if (result.value.grade_warnings?.length) {
+    content += `【学业预警】\n${result.value.grade_warnings.map((w:any) => `• ${w.name} - ${w.course}: ${w.risk}`).join('\n')}\n\n`
+  }
+  if (result.value.academic_advice?.length) {
+    content += `【学风建议】\n${result.value.academic_advice.map((a:string,i:number) => `${i+1}. ${a}`).join('\n')}\n\n`
+  }
+  if (result.value.summary) content += `【总结】\n${result.value.summary}`
+
+  try {
+    const resp = await axios.post('/api/export/pdf', { title: '学情分析报告', content }, { responseType: 'blob' })
+    const url = URL.createObjectURL(resp.data)
+    const a = document.createElement('a')
+    a.href = url; a.download = '学情分析报告.pdf'; a.click()
+    URL.revokeObjectURL(url)
+  } catch { /* ignore */ }
+}
+
 function downloadTemplate() {
   const rows = [
     ['姓名', '学号', '课程', '成绩', '缺勤次数', '请假次数'],
@@ -69,7 +93,12 @@ function downloadTemplate() {
 
     <div v-else class="result-area">
       <el-card style="margin-bottom:16px">
-        <template #header><b>分析结果</b></template>
+        <template #header>
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <b>分析结果</b>
+            <el-button size="small" @click="exportPDF">导出 PDF</el-button>
+          </div>
+        </template>
         <p style="font-size:15px;line-height:1.8;color:#303133" v-if="result.summary">{{ result.summary }}</p>
       </el-card>
 

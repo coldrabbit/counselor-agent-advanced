@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { ElMessage } from 'element-plus'
+import axios from 'axios'
 import { useTalkRecordStore } from '../stores/talkRecord'
 
 const store = useTalkRecordStore()
@@ -43,6 +44,23 @@ async function handleApprove() {
   } catch {
     ElMessage.error(store.error || '审核失败')
   }
+}
+
+async function exportPDF(type: string) {
+  let title = ''
+  let content = ''
+  if (type === 'record' && store.currentRecord) {
+    title = `${store.currentRecord.student_name} 谈心谈话记录`
+    content = `【学生】${store.currentRecord.student_name} (${store.currentRecord.student_id})\n【风险等级】${store.currentRecord.risk_level}\n\n【谈话记录】\n${store.currentRecord.conversation_record}\n\n【跟进建议】\n${store.currentRecord.follow_up_advice}\n\n【家校沟通建议】\n${store.currentRecord.parent_advice}`
+  }
+  if (!title) return
+  try {
+    const resp = await axios.post('/api/export/pdf', { title, content }, { responseType: 'blob' })
+    const url = URL.createObjectURL(resp.data)
+    const a = document.createElement('a')
+    a.href = url; a.download = `${title}.pdf`; a.click()
+    URL.revokeObjectURL(url)
+  } catch { /* ignore */ }
 }
 </script>
 
@@ -112,6 +130,7 @@ async function handleApprove() {
         >
           审核通过
         </el-button>
+        <el-button size="large" @click="exportPDF('record')">导出 PDF</el-button>
       </div>
     </div>
   </div>

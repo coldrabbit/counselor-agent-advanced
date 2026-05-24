@@ -10,6 +10,7 @@ from app.api.imports import router as import_router
 from app.api.templates import router as template_router
 from app.api.risks import router as risk_router
 from app.api.analysis import router as analysis_router
+from app.api.export import router as export_router
 from alembic.config import Config as AlembicConfig
 from alembic import command
 
@@ -34,6 +35,7 @@ def create_app() -> FastAPI:
     app.include_router(template_router, prefix="/api")
     app.include_router(risk_router, prefix="/api")
     app.include_router(analysis_router, prefix="/api")
+    app.include_router(export_router, prefix="/api")
 
     @app.on_event("startup")
     def on_startup():
