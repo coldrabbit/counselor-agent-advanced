@@ -12,6 +12,8 @@ from app.models.notice import Notice  # noqa: F401
 from app.models.task import Task  # noqa: F401
 from app.models.counselor import CounselorProfile  # noqa: F401
 from app.models.talk_record import TalkRecord  # noqa: F401
+from app.models.class_model import Class  # noqa: F401
+from app.models.student import Student  # noqa: F401
 
 config = context.config
 if config.config_file_name is not None:

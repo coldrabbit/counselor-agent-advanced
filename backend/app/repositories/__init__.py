@@ -3,6 +3,8 @@ from app.repositories.notice import NoticeRepository
 from app.repositories.talk_record import TalkRecordRepository
 from app.repositories.counselor import CounselorRepository
 from app.repositories.task import TaskRepository
+from app.repositories.classes import ClassRepository
+from app.repositories.students import StudentRepository
 
 __all__ = [
     "BaseRepository",
@@ -10,4 +12,6 @@ __all__ = [
     "TalkRecordRepository",
     "CounselorRepository",
     "TaskRepository",
+    "ClassRepository",
+    "StudentRepository",
 ]
