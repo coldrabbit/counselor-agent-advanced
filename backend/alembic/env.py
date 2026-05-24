@@ -16,6 +16,7 @@ from app.models.class_model import Class  # noqa: F401
 from app.models.student import Student  # noqa: F401
 from app.models.template import NoticeTemplate  # noqa: F401
 from app.models.risk_record import RiskRecord  # noqa: F401
+from app.models.document import Document  # noqa: F401
 
 config = context.config
 if config.config_file_name is not None:

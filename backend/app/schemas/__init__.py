@@ -5,3 +5,4 @@ from app.schemas.classes import ClassCreate, ClassResponse
 from app.schemas.students import StudentCreate, StudentUpdate, StudentResponse
 from app.schemas.templates import TemplateCreate, TemplateUpdate, TemplateResponse
 from app.schemas.risk import RiskRecordCreate, RiskRecordUpdate, RiskRecordResponse, RiskStats
+from app.schemas.document import DocumentCreate, DocumentResponse

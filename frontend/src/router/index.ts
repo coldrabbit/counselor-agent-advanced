@@ -28,6 +28,11 @@ const router = createRouter({
       name: 'analysis',
       component: () => import('../pages/AcademicAnalysis.vue'),
     },
+    {
+      path: '/documents',
+      name: 'documents',
+      component: () => import('../pages/KnowledgeBase.vue'),
+    },
   ],
 })
 

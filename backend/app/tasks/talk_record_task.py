@@ -3,6 +3,8 @@ import logging
 
 from app.prompts.talk_record import build_talk_record_prompt
 from app.services.ai.client import AIService
+from app.db.database import SessionLocal
+from app.services.rag import RAGService
 
 logger = logging.getLogger(__name__)
 
@@ -27,6 +29,15 @@ def generate_talk_record_task(
     user_message = f"请为以下学生生成谈话记录：\n\n学生姓名：{student_name}\n学号：{student_id}\n情况描述：{situation}"
 
     ai = AIService()
+
+    # RAG 知识库检索增强
+    db = SessionLocal()
+    try:
+        rag = RAGService(db)
+        system_prompt, user_message = rag.augment_prompt(system_prompt, user_message)
+    finally:
+        db.close()
+
     result = ai.chat(
         system_prompt=system_prompt,
         user_message=user_message,

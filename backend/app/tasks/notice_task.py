@@ -3,6 +3,8 @@ import logging
 
 from app.prompts.notice import build_notice_prompt
 from app.services.ai.client import AIService
+from app.db.database import SessionLocal
+from app.services.rag import RAGService
 
 logger = logging.getLogger(__name__)
 
@@ -36,6 +38,15 @@ def generate_notice_task(
             user_message += f"\n- 参加人员：{participants}"
 
     ai = AIService()
+
+    # RAG 知识库检索增强
+    db = SessionLocal()
+    try:
+        rag = RAGService(db)
+        system_prompt, user_message = rag.augment_prompt(system_prompt, user_message)
+    finally:
+        db.close()
+
     result = ai.chat(
         system_prompt=system_prompt,
         user_message=user_message,

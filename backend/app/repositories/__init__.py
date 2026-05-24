@@ -7,6 +7,7 @@ from app.repositories.classes import ClassRepository
 from app.repositories.students import StudentRepository
 from app.repositories.templates import TemplateRepository
 from app.repositories.risk import RiskRepository
+from app.repositories.document import DocumentRepository
 
 __all__ = [
     "BaseRepository",
@@ -18,4 +19,5 @@ __all__ = [
     "StudentRepository",
     "TemplateRepository",
     "RiskRepository",
+    "DocumentRepository",
 ]

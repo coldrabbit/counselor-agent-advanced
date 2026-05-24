@@ -9,6 +9,7 @@
       <router-link to="/students">学生管理</router-link>
       <router-link to="/risks">风险预警</router-link>
       <router-link to="/analysis">学情分析</router-link>
+      <router-link to="/documents">知识库</router-link>
     </nav>
     <router-view />
   </div>

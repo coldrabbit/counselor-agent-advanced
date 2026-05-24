@@ -7,6 +7,7 @@ from app.models.class_model import Class
 from app.models.student import Student
 from app.models.template import NoticeTemplate
 from app.models.risk_record import RiskRecord
+from app.models.document import Document
 
 
 def init_db():
