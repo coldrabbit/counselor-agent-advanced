@@ -24,6 +24,15 @@ def create_student(req: StudentCreate, db: Session = Depends(get_db)):
     )
 
 
+@router.get("/{student_id}", response_model=StudentResponse)
+def get_student(student_id: str, db: Session = Depends(get_db)):
+    repo = StudentRepository(db)
+    student = repo.get_by_id(student_id)
+    if not student:
+        raise HTTPException(status_code=404, detail="学生不存在")
+    return student
+
+
 @router.put("/{student_id}", response_model=StudentResponse)
 def update_student(student_id: str, req: StudentUpdate, db: Session = Depends(get_db)):
     repo = StudentRepository(db)
