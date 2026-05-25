@@ -16,6 +16,8 @@ function handleLogout() {
   <div class="app">
     <nav v-if="route.name !== 'login'" class="app-nav">
       <router-link to="/" class="brand">Counselor OS</router-link>
+      <router-link to="/">工作台</router-link>
+      <router-link to="/assistant">AI 助手</router-link>
       <router-link to="/notices">通知生成器</router-link>
       <router-link to="/talk-record">谈心谈话</router-link>
       <router-link to="/students">学生管理</router-link>
@@ -52,6 +54,8 @@ body {
   position: sticky;
   top: 0;
   z-index: 100;
+  overflow-x: auto;
+  white-space: nowrap;
 }
 
 .brand {

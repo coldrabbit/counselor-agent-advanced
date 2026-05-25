@@ -1,0 +1,66 @@
+{
+  "task_id": "task-001-monthly-workbench",
+  "title": "月度工作台 MVP",
+  "created_at": "2026-05-26T00:47:00+08:00",
+  "status": "APPROVED",
+  "phase": "review",
+  "artifacts": {
+    "vision": ".agent/tasks/task-001-monthly-workbench/VISION.md",
+    "spec": ".agent/tasks/task-001-monthly-workbench/SPEC.md",
+    "tasks": ".agent/tasks/task-001-monthly-workbench/TASKS.md",
+    "qa_report": ".agent/tasks/task-001-monthly-workbench/QA_REPORT.md",
+    "review": ".agent/tasks/task-001-monthly-workbench/REVIEW.md"
+  },
+  "approvals": {
+    "spec_approved": true,
+    "merge_approved": true
+  },
+  "builder": {
+    "agent": "Codex",
+    "auto_fix_rounds_used": 0,
+    "max_auto_fix_rounds": 3
+  },
+  "qa": {
+    "agent": "OpenCode + GLM 5.1",
+    "verdict": "PASS"
+  },
+  "reviewer": {
+    "agent": "Claude Code",
+    "verdict": "APPROVED",
+    "blockers": 0,
+    "warnings": 2
+  },
+  "gates": {
+    "lint": "pass",
+    "typecheck": "pass",
+    "test": "pass",
+    "build": "pass"
+  },
+  "files": {
+    "created": [
+      "backend/app/models/monthly_task.py",
+      "backend/app/schemas/monthly_task.py",
+      "backend/app/repositories/monthly_task.py",
+      "backend/app/api/monthly_tasks.py",
+      "backend/app/db/seed_monthly_tasks.py",
+      "backend/tests/test_api/test_monthly_tasks.py",
+      "frontend/src/pages/MonthlyWorkbench.vue"
+    ],
+    "modified": [
+      "backend/app/main.py",
+      "backend/app/repositories/__init__.py",
+      "frontend/src/router/index.ts",
+      "frontend/src/App.vue"
+    ],
+    "forbidden": [
+      "backend/app/models/notice.py",
+      "backend/app/tasks/notice_task.py",
+      "backend/app/api/notices.py",
+      "backend/app/workflows/",
+      "backend/app/services/ai/client.py",
+      "backend/app/engine/",
+      "frontend/src/components/PreGenerateDialog.vue",
+      "frontend/src/stores/"
+    ]
+  }
+}

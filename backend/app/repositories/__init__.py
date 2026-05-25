@@ -12,6 +12,7 @@ from app.repositories.user import UserRepository
 from app.repositories.workflow import WorkflowRepository
 from app.repositories.activity import ActivityRepository
 from app.repositories.employment import EmploymentRepository
+from app.repositories.monthly_task import MonthlyTaskRepository
 
 __all__ = [
     "BaseRepository",
@@ -28,4 +29,5 @@ __all__ = [
     "WorkflowRepository",
     "ActivityRepository",
     "EmploymentRepository",
+    "MonthlyTaskRepository",
 ]

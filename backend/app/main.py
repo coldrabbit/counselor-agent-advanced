@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -21,6 +23,7 @@ from app.api.users import router as user_router
 from app.api.workflows_api import router as wf_router
 from app.api.activities import router as activities_router
 from app.api.employments import router as employments_router
+from app.api.monthly_tasks import router as monthly_tasks_router
 from app.api.auth import router as auth_router
 from app.api.ask import router as ask_router
 from alembic.config import Config as AlembicConfig
@@ -58,6 +61,7 @@ def create_app() -> FastAPI:
     app.include_router(wf_router, prefix="/api")
     app.include_router(activities_router, prefix="/api")
     app.include_router(employments_router, prefix="/api")
+    app.include_router(monthly_tasks_router, prefix="/api")
     app.include_router(auth_router, prefix="/api")
     app.include_router(ask_router, prefix="/api")
 
@@ -65,8 +69,18 @@ def create_app() -> FastAPI:
     def on_startup():
         import app.tools.builtin_tools  # noqa: F401 — 确保 MCP 工具在启动时注册
         import app.agents.defined_agents  # noqa: F401 — 确保 AI Agent 在启动时注册
-        alembic_cfg = AlembicConfig("alembic.ini")
+        backend_dir = Path(__file__).resolve().parents[1]
+        alembic_cfg = AlembicConfig(str(backend_dir / "alembic.ini"))
+        alembic_cfg.set_main_option("script_location", str(backend_dir / "alembic"))
         command.upgrade(alembic_cfg, "head")
+        from app.db import database as db_module
+        from app.db.seed_monthly_tasks import seed_monthly_tasks
+
+        db = db_module.SessionLocal()
+        try:
+            seed_monthly_tasks(db)
+        finally:
+            db.close()
 
     return app
 

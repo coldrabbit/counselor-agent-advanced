@@ -12,6 +12,7 @@ from app.models.user import User
 from app.models.workflow import Workflow
 from app.models.activity import Activity
 from app.models.employment import Employment
+from app.models.monthly_task import MonthlyTask
 
 
 def init_db():

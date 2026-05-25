@@ -1,0 +1,83 @@
+{
+  "factory": {
+    "version": "1.0.0",
+    "phase": "phase-1-init",
+    "maturity_level": "L3-gated",
+    "last_updated": "2026-05-26T00:00:00+08:00"
+  },
+  "agents": {
+    "planner": {
+      "agent": "Claude Code",
+      "model": "DeepSeek Pro",
+      "status": "ready",
+      "prompt_file": ".agent/prompts/planner.md"
+    },
+    "builder": {
+      "agent": "Codex",
+      "model": "DeepSeek Pro",
+      "status": "ready",
+      "prompt_file": ".agent/prompts/builder.md"
+    },
+    "qa": {
+      "agent": "OpenCode",
+      "model": "GLM 5.1",
+      "status": "ready",
+      "prompt_file": ".agent/prompts/qa.md"
+    },
+    "reviewer": {
+      "agent": "Claude Code",
+      "model": "DeepSeek Pro",
+      "status": "ready",
+      "prompt_file": ".agent/prompts/reviewer.md"
+    },
+    "hermes": {
+      "agent": "Hermes",
+      "model": "DeepSeek Flash",
+      "role": "wechat-gateway",
+      "status": "standby"
+    }
+  },
+  "current_task": {
+    "task_id": "task-001-monthly-workbench",
+    "title": "月度工作台 MVP",
+    "status": "WAITING_APPROVAL",
+    "phase": "plan",
+    "spec_file": ".agent/tasks/task-001-monthly-workbench/SPEC.md",
+    "tasks_file": ".agent/tasks/task-001-monthly-workbench/TASKS.md"
+  },
+  "task_queue": [],
+  "completed_tasks": [],
+  "failed_tasks": [],
+  "gates": {
+    "lint": {"backend": "ruff check", "frontend": "eslint"},
+    "typecheck": {"backend": "mypy", "frontend": "vue-tsc --noEmit"},
+    "test": {"backend": "pytest -v", "frontend": "vitest"},
+    "build": {"backend": "docker build", "frontend": "npm run build"}
+  },
+  "constraints": {
+    "max_auto_fix_rounds": 3,
+    "max_file_lines": 300,
+    "forbidden_tech": [
+      "LangGraph",
+      "CrewAI",
+      "AutoGen",
+      "Kubernetes",
+      "Event Bus",
+      "Microservices",
+      "CQRS",
+      "DDD"
+    ],
+    "qa_cannot_modify": ["architecture", "business_logic", "spec", "tasks"],
+    "builder_cannot_modify": ["spec", "architecture_decisions"]
+  },
+  "project": {
+    "name": "Counselor OS",
+    "current_phase": "Notification Generator MVP",
+    "tech_stack": {
+      "frontend": ["Vue 3", "Vite", "TypeScript", "Element Plus", "Pinia"],
+      "backend": ["FastAPI", "PostgreSQL", "SQLAlchemy", "Alembic"],
+      "ai": ["DeepSeek API"],
+      "deployment": ["Docker", "Railway/VPS"]
+    }
+  }
+}

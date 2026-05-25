@@ -21,6 +21,7 @@ from app.models.user import User  # noqa: F401
 from app.models.workflow import Workflow  # noqa: F401
 from app.models.activity import Activity  # noqa: F401
 from app.models.employment import Employment  # noqa: F401
+from app.models.monthly_task import MonthlyTask  # noqa: F401
 
 config = context.config
 if config.config_file_name is not None:
