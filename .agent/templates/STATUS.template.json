@@ -1,0 +1,83 @@
+{
+  "$schema": "https://counselor-os.local/schemas/task-status-v1.json",
+  "_comment": "Template for new task STATUS.json. Replace all placeholder values.",
+  "task_id": "task-xxx-slug",
+  "title": "Task Title",
+  "created_at": "ISO8601_TIMESTAMP",
+  "updated_at": "ISO8601_TIMESTAMP",
+  "status": "DRAFT",
+  "phase": "init",
+  "priority": 1,
+  "owner_agent": null,
+  "next_agent": null,
+  "branch": null,
+  "tag": null,
+  "blockers": 0,
+  "warnings": 0,
+  "auto_fix_rounds_used": 0,
+  "max_auto_fix_rounds": 3,
+  "artifacts": {
+    "vision": null,
+    "spec": null,
+    "tasks": null,
+    "qa_report": null,
+    "review": null
+  },
+  "approvals": {
+    "spec_approved": false,
+    "merge_approved": false
+  },
+  "agents": {
+    "planner": {
+      "agent": "Claude Code",
+      "verdict": null,
+      "completed_at": null
+    },
+    "builder": {
+      "agent": "Codex",
+      "verdict": null,
+      "auto_fix_rounds": 0,
+      "completed_at": null
+    },
+    "qa": {
+      "agent": "OpenCode + GLM 5.1",
+      "verdict": null,
+      "completed_at": null
+    },
+    "reviewer": {
+      "agent": "Claude Code",
+      "verdict": null,
+      "blockers": 0,
+      "warnings": 0,
+      "completed_at": null
+    }
+  },
+  "gates": {
+    "lint": "pending",
+    "typecheck": "pending",
+    "test": "pending",
+    "build": "pending"
+  },
+  "files": {
+    "created": [],
+    "modified": [],
+    "forbidden": []
+  },
+  "lifecycle": {
+    "current_phase": null,
+    "phase_entered_at": null,
+    "phase_history": [],
+    "retry_count": 0,
+    "max_retries_per_phase": {
+      "building": 3,
+      "auto_fixing": 3,
+      "qa": 1,
+      "reviewing": 1
+    }
+  },
+  "hermes": {
+    "last_reported_at": null,
+    "notifications_sent": 0,
+    "pending_notifications": []
+  }
+}

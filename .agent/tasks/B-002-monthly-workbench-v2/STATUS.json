@@ -1,0 +1,76 @@
+{
+  "task_id": "B-002-monthly-workbench-v2",
+  "title": "月度工作台 v2 — 本周优先 + 临近截止 + AI 推荐",
+  "created_at": "2026-05-26T03:00:00+08:00",
+  "status": "DRAFT",
+  "phase": "init",
+  "priority": 2,
+  "owner_agent": null,
+  "next_agent": "planner",
+  "branch": null,
+  "tag": null,
+  "blockers": 0,
+  "warnings": 0,
+  "auto_fix_rounds_used": 0,
+  "max_auto_fix_rounds": 3,
+  "artifacts": {
+    "vision": ".agent/tasks/B-002-monthly-workbench-v2/VISION.md",
+    "spec": ".agent/tasks/B-002-monthly-workbench-v2/SPEC.md",
+    "tasks": ".agent/tasks/B-002-monthly-workbench-v2/TASKS.md",
+    "qa_report": null,
+    "review": null
+  },
+  "approvals": {
+    "spec_approved": false,
+    "merge_approved": false
+  },
+  "agents": {
+    "planner": {"agent": "Claude Code", "verdict": null, "completed_at": null},
+    "builder": {"agent": "Codex", "verdict": null, "auto_fix_rounds": 0, "completed_at": null},
+    "qa": {"agent": "OpenCode + GLM 5.1", "verdict": null, "completed_at": null},
+    "reviewer": {"agent": "Claude Code", "verdict": null, "blockers": 0, "warnings": 0, "completed_at": null}
+  },
+  "gates": {
+    "lint": "pending",
+    "typecheck": "pending",
+    "test": "pending",
+    "build": "pending"
+  },
+  "files": {
+    "created": [
+      "backend/app/api/workbench.py",
+      "backend/app/prompts/workbench.py",
+      "backend/tests/test_api/test_workbench.py"
+    ],
+    "modified": [
+      "backend/app/main.py",
+      "backend/app/models/monthly_task.py",
+      "backend/app/db/seed_monthly_tasks.py",
+      "frontend/src/pages/MonthlyWorkbench.vue"
+    ],
+    "forbidden": [
+      "backend/app/tasks/notice_task.py",
+      "backend/app/workflows/",
+      "backend/app/services/ai/client.py",
+      "backend/app/engine/",
+      "frontend/src/components/PreGenerateDialog.vue",
+      "frontend/src/pages/NoticeGenerator.vue",
+      "frontend/src/stores/"
+    ],
+    "conflict": [
+      "backend/app/main.py (与 B-003 共享修改，合并时需协调)"
+    ]
+  },
+  "lifecycle": {
+    "current_phase": null,
+    "phase_entered_at": null,
+    "phase_history": [],
+    "retry_count": 0,
+    "max_retries_per_phase": {"building": 3, "auto_fixing": 3, "qa": 1, "reviewing": 1}
+  },
+  "hermes": {
+    "last_reported_at": null,
+    "notifications_sent": 0,
+    "pending_notifications": []
+  }
+}

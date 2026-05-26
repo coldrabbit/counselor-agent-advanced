@@ -1,0 +1,15 @@
+{
+  "$schema": "https://counselor-os.local/schemas/log-entry-v1.json",
+  "_comment": "Template for task-level log entries. Each log file is a JSONL file with entries following this structure.",
+  "timestamp": "ISO8601_TIMESTAMP",
+  "task_id": "task-xxx-slug",
+  "agent": "planner|builder|qa|reviewer|hermes|human|system",
+  "level": "INFO|WARN|ERROR|DEBUG",
+  "message": "Human-readable log message",
+  "context": {
+    "phase": "init|plan|build|qa|review|completed",
+    "action": "Descriptive action name",
+    "duration_seconds": null,
+    "details": {}
+  }
+}

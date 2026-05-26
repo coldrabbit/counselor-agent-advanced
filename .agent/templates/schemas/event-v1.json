@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://counselor-os.local/schemas/event-v1.json",
+  "title": "Hermes Event v1.0",
+  "description": "Event schema for the Hermes file-system status bus",
+  "type": "object",
+  "required": ["timestamp", "event_type", "task_id", "agent", "from_state", "to_state", "payload", "correlation_id"],
+  "properties": {
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO8601 timestamp with timezone"
+    },
+    "event_type": {
+      "type": "string",
+      "enum": [
+        "TASK_CREATED",
+        "AGENT_ASSIGNED",
+        "STATE_TRANSITION",
+        "ARTIFACT_CREATED",
+        "GATE_RESULT",
+        "BLOCKER_FOUND",
+        "ERROR",
+        "RETRY_STARTED",
+        "HUMAN_ACTION",
+        "AGENT_RELEASED",
+        "TASK_COMPLETED"
+      ],
+      "description": "Event type classification"
+    },
+    "task_id": {
+      "type": "string",
+      "pattern": "^task-[0-9]+-[a-z0-9-]+$",
+      "description": "Task identifier (e.g. task-001-monthly-workbench)"
+    },
+    "agent": {
+      "type": "string",
+      "enum": ["planner", "builder", "qa", "reviewer", "hermes", "human", "system"],
+      "description": "Agent that generated this event"
+    },
+    "from_state": {
+      "type": ["string", "null"],
+      "enum": [
+        null,
+        "DRAFT", "PLANNING", "WAITING_SPEC_APPROVAL", "BUILDING",
+        "AUTO_FIXING", "QA_RUNNING", "REVIEWING", "NEEDS_FIX",
+        "WAITING_MERGE_APPROVAL", "MERGED", "FAILED", "CANCELLED"
+      ],
+      "description": "State before this event"
+    },
+    "to_state": {
+      "type": "string",
+      "enum": [
+        "DRAFT", "PLANNING", "WAITING_SPEC_APPROVAL", "BUILDING",
+        "AUTO_FIXING", "QA_RUNNING", "REVIEWING", "NEEDS_FIX",
+        "WAITING_MERGE_APPROVAL", "MERGED", "FAILED", "CANCELLED"
+      ],
+      "description": "State after this event"
+    },
+    "payload": {
+      "type": "object",
+      "required": ["message", "phase", "progress"],
+      "properties": {
+        "message": {
+          "type": "string",
+          "description": "Human-readable description"
+        },
+        "phase": {
+          "type": "string",
+          "description": "Current phase name"
+        },
+        "progress": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Progress percentage 0-100"
+        }
+      },
+      "additionalProperties": true
+    },
+    "correlation_id": {
+      "type": "string",
+      "pattern": "^evt-[0-9]+-[0-9]+$",
+      "description": "Event correlation ID (evt-{task_seq}-{event_seq})"
+    }
+  },
+  "additionalProperties": false
+}

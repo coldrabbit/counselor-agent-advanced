@@ -1,0 +1,14 @@
+{
+  "$schema": "https://counselor-os.local/schemas/queue-entry-v1.json",
+  "_comment": "Template for queue entries in .agent/queue/. Each file is a JSON with this structure.",
+  "task_id": "task-xxx-slug",
+  "title": "Task Title",
+  "priority": 1,
+  "status": "DRAFT",
+  "phase": "init",
+  "assigned_agent": null,
+  "required_agent": "planner|builder|qa|reviewer",
+  "queued_at": "ISO8601_TIMESTAMP",
+  "reason": "Waiting for agent availability",
+  "retry_count": 0
+}

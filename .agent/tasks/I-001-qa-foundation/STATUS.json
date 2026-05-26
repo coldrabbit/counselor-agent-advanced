@@ -1,0 +1,112 @@
+{
+  "task_id": "I-001-qa-foundation",
+  "title": "QA 基础设施 — lint + typecheck + test + E2E + CI + 移动端检查",
+  "created_at": "2026-05-26T03:00:00+08:00",
+  "status": "BUILDING",
+  "phase": "build",
+  "priority": 1,
+  "owner_agent": "opencode",
+  "next_agent": "reviewer",
+  "branch": null,
+  "tag": null,
+  "blockers": 0,
+  "warnings": 0,
+  "auto_fix_rounds_used": 0,
+  "max_auto_fix_rounds": 3,
+  "artifacts": {
+    "vision": ".agent/tasks/I-001-qa-foundation/VISION.md",
+    "spec": ".agent/tasks/I-001-qa-foundation/SPEC.md",
+    "tasks": ".agent/tasks/I-001-qa-foundation/TASKS.md",
+    "qa_report": null,
+    "review": null
+  },
+  "approvals": {
+    "spec_approved": false,
+    "merge_approved": false
+  },
+  "agents": {
+    "planner": {
+      "agent": "Claude Code",
+      "verdict": null,
+      "completed_at": null
+    },
+    "builder": {
+      "agent": "Codex",
+      "verdict": null,
+      "auto_fix_rounds": 0,
+      "completed_at": null
+    },
+    "qa": {
+      "agent": "OpenCode + GLM 5.1",
+      "verdict": null,
+      "completed_at": null
+    },
+    "reviewer": {
+      "agent": "opencode",
+      "verdict": null,
+      "blockers": 0,
+      "warnings": 0,
+      "completed_at": null
+    }
+  },
+  "gates": {
+    "lint": "pending",
+    "typecheck": "pending",
+    "test": "pending",
+    "build": "pending"
+  },
+  "files": {
+    "created": [
+      "frontend/eslint.config.js",
+      "frontend/vitest.config.ts",
+      "frontend/src/__tests__/example.test.ts",
+      "backend/ruff.toml",
+      "e2e/playwright.config.ts",
+      "e2e/tests/example.spec.ts",
+      "e2e/tests/console-check.spec.ts",
+      "scripts/check-mobile.sh",
+      "scripts/check-console.sh",
+      ".github/workflows/ci.yml"
+    ],
+    "modified": [
+      "frontend/package.json (scripts + devDependencies only)"
+    ],
+    "forbidden": [
+      "backend/app/ (all business code)",
+      "frontend/src/pages/",
+      "frontend/src/components/",
+      "frontend/src/stores/",
+      "frontend/src/router/",
+      "frontend/src/api/",
+      "frontend/src/App.vue",
+      "frontend/src/main.ts"
+    ],
+    "conflict": [
+      "无冲突 — I-001 只加配置/脚本，不碰业务代码，与 B-002/B-003 零冲突"
+    ]
+  },
+  "special_constraints": [
+    "I-001 严禁修改任何业务代码文件",
+    "只能新增配置文件、测试代码、脚本",
+    "package.json 只允许新增 scripts 和 devDependencies",
+    "reviewer 必须检查：git diff 确认无业务代码变更"
+  ],
+  "lifecycle": {
+    "current_phase": "BUILDING",
+    "phase_entered_at": "2026-05-26T15:58:13.339484+00:00",
+    "phase_history": [],
+    "retry_count": 0,
+    "max_retries_per_phase": {
+      "building": 3,
+      "auto_fixing": 3,
+      "qa": 1,
+      "reviewing": 1
+    }
+  },
+  "hermes": {
+    "last_reported_at": null,
+    "notifications_sent": 0,
+    "pending_notifications": []
+  },
+  "updated_at": "2026-05-26T15:58:13.339484+00:00"
+}

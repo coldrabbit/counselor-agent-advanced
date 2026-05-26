@@ -1,0 +1,103 @@
+{
+  "$schema": "https://counselor-os.local/schemas/global-status-v1.json",
+  "factory": {
+    "version": "1.0.0",
+    "phase": "phase-2-hermes-bus",
+    "maturity_level": "L3-gated",
+    "last_updated": "2026-05-26T00:00:00+08:00",
+    "uptime_started": null
+  },
+  "agents": {
+    "planner": {
+      "agent": "Claude Code",
+      "model": "DeepSeek Pro",
+      "status": "idle",
+      "current_task": null,
+      "prompt_file": ".agent/prompts/planner.md"
+    },
+    "builder": {
+      "agent": "Codex",
+      "model": "DeepSeek Pro",
+      "status": "idle",
+      "current_task": null,
+      "prompt_file": ".agent/prompts/builder.md",
+      "parallel_slots": 3,
+      "active_slots": 0,
+      "max_auto_fix_rounds": 3
+    },
+    "qa": {
+      "agent": "OpenCode",
+      "model": "GLM 5.1",
+      "status": "idle",
+      "current_task": null,
+      "prompt_file": ".agent/prompts/qa.md"
+    },
+    "reviewer": {
+      "agent": "Claude Code",
+      "model": "DeepSeek Pro",
+      "status": "idle",
+      "current_task": null,
+      "prompt_file": ".agent/prompts/reviewer.md"
+    },
+    "hermes": {
+      "agent": "Hermes",
+      "model": "DeepSeek Flash",
+      "role": "supervisor",
+      "status": "standby",
+      "poll_interval_seconds": 30,
+      "notify_channels": ["wechat"],
+      "prompt_file": ".agent/prompts/hermes-supervisor.md"
+    }
+  },
+  "gates": {
+    "lint": {
+      "backend": "ruff check backend/",
+      "frontend": "cd frontend && npm run lint"
+    },
+    "typecheck": {
+      "backend": "python -c \"from app.models._all_ import *; print('ok')\"",
+      "frontend": "cd frontend && vue-tsc --noEmit"
+    },
+    "test": {
+      "backend": "pytest backend/ -v",
+      "frontend": "cd frontend && npm run test"
+    },
+    "build": {
+      "backend": "docker build backend/",
+      "frontend": "cd frontend && npm run build"
+    }
+  },
+  "constraints": {
+    "max_auto_fix_rounds": 3,
+    "max_file_lines": 300,
+    "max_parallel_tasks": 3,
+    "forbidden_tech": [
+      "LangGraph", "CrewAI", "AutoGen",
+      "Kubernetes", "Event Bus", "Microservices",
+      "CQRS", "DDD"
+    ],
+    "qa_cannot_modify": ["architecture", "business_logic", "spec", "tasks"],
+    "builder_cannot_modify": ["spec", "architecture_decisions"],
+    "reviewer_cannot_modify": ["any_source_file"]
+  },
+  "project": {
+    "name": "Counselor OS",
+    "current_phase": "Hermes Status Bus",
+    "tech_stack": {
+      "frontend": ["Vue 3", "Vite", "TypeScript", "Element Plus", "Pinia"],
+      "backend": ["FastAPI", "PostgreSQL", "SQLAlchemy", "Alembic"],
+      "ai": ["DeepSeek API"],
+      "deployment": ["Docker", "Railway/VPS"]
+    }
+  },
+  "stats": {
+    "total_tasks": 1,
+    "completed_tasks": 1,
+    "failed_tasks": 0,
+    "active_tasks": 0,
+    "queued_tasks": 0,
+    "total_auto_fix_rounds": 0,
+    "total_blockers_found": 1,
+    "total_merge_cycles": 1
+  }
+}

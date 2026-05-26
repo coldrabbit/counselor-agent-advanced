@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://counselor-os.local/schemas/active-tasks-v1.json",
+  "title": "Active Tasks Index v1.0",
+  "description": "Active tasks summary schema for Hermes bus",
+  "type": "object",
+  "required": ["last_updated", "summary", "tasks"],
+  "properties": {
+    "last_updated": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "summary": {
+      "type": "object",
+      "required": ["total", "active", "queued", "completed", "failed", "blocked"],
+      "properties": {
+        "total": {"type": "integer"},
+        "active": {"type": "integer"},
+        "queued": {"type": "integer"},
+        "completed": {"type": "integer"},
+        "failed": {"type": "integer"},
+        "blocked": {"type": "integer"}
+      }
+    },
+    "tasks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "task_id", "title", "status", "phase", "owner_agent",
+          "next_agent", "priority", "created_at", "blockers", "auto_fix_rounds"
+        ],
+        "properties": {
+          "task_id": {"type": "string"},
+          "title": {"type": "string"},
+          "status": {
+            "type": "string",
+            "enum": [
+              "DRAFT", "PLANNING", "WAITING_SPEC_APPROVAL", "BUILDING",
+              "AUTO_FIXING", "QA_RUNNING", "REVIEWING", "NEEDS_FIX",
+              "WAITING_MERGE_APPROVAL", "MERGED", "FAILED", "CANCELLED"
+            ]
+          },
+          "phase": {"type": "string"},
+          "owner_agent": {"type": ["string", "null"]},
+          "next_agent": {"type": ["string", "null"]},
+          "priority": {"type": "integer", "minimum": 1, "maximum": 5},
+          "created_at": {"type": "string", "format": "date-time"},
+          "merged_at": {"type": ["string", "null"], "format": "date-time"},
+          "branch": {"type": ["string", "null"]},
+          "tag": {"type": ["string", "null"]},
+          "blockers": {"type": "integer", "minimum": 0},
+          "auto_fix_rounds": {"type": "integer", "minimum": 0},
+          "artifacts": {"type": "object"},
+          "gates": {"type": "object"}
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}

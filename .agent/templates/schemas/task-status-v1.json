@@ -1,0 +1,206 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://counselor-os.local/schemas/task-status-v1.json",
+  "title": "Task STATUS v1.0",
+  "description": "Task-level status file schema for Hermes bus",
+  "type": "object",
+  "required": [
+    "task_id", "title", "created_at", "updated_at",
+    "status", "phase", "priority", "owner_agent", "next_agent",
+    "blockers", "warnings", "auto_fix_rounds_used", "max_auto_fix_rounds",
+    "artifacts", "approvals", "agents", "gates", "files", "lifecycle", "hermes"
+  ],
+  "properties": {
+    "task_id": {
+      "type": "string",
+      "pattern": "^task-[0-9]+-[a-z0-9-]+$"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "DRAFT", "PLANNING", "WAITING_SPEC_APPROVAL", "BUILDING",
+        "AUTO_FIXING", "QA_RUNNING", "REVIEWING", "NEEDS_FIX",
+        "WAITING_MERGE_APPROVAL", "MERGED", "FAILED", "CANCELLED"
+      ]
+    },
+    "phase": {
+      "type": "string",
+      "enum": ["init", "plan", "build", "qa", "review", "completed"]
+    },
+    "priority": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5
+    },
+    "owner_agent": {
+      "type": ["string", "null"]
+    },
+    "next_agent": {
+      "type": ["string", "null"]
+    },
+    "branch": {
+      "type": ["string", "null"]
+    },
+    "tag": {
+      "type": ["string", "null"]
+    },
+    "blockers": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "warnings": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "auto_fix_rounds_used": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 3
+    },
+    "max_auto_fix_rounds": {
+      "type": "integer",
+      "const": 3
+    },
+    "artifacts": {
+      "type": "object",
+      "properties": {
+        "vision": {"type": ["string", "null"]},
+        "spec": {"type": ["string", "null"]},
+        "tasks": {"type": ["string", "null"]},
+        "qa_report": {"type": ["string", "null"]},
+        "review": {"type": ["string", "null"]}
+      },
+      "required": ["vision", "spec", "tasks", "qa_report", "review"],
+      "additionalProperties": false
+    },
+    "approvals": {
+      "type": "object",
+      "properties": {
+        "spec_approved": {"type": "boolean"},
+        "merge_approved": {"type": "boolean"}
+      },
+      "required": ["spec_approved", "merge_approved"],
+      "additionalProperties": false
+    },
+    "agents": {
+      "type": "object",
+      "properties": {
+        "planner": {
+          "type": "object",
+          "properties": {
+            "agent": {"type": "string"},
+            "verdict": {"type": ["string", "null"]},
+            "completed_at": {"type": ["string", "null"], "format": "date-time"}
+          },
+          "required": ["agent", "verdict", "completed_at"]
+        },
+        "builder": {
+          "type": "object",
+          "properties": {
+            "agent": {"type": "string"},
+            "verdict": {"type": ["string", "null"]},
+            "auto_fix_rounds": {"type": "integer", "minimum": 0},
+            "completed_at": {"type": ["string", "null"], "format": "date-time"}
+          },
+          "required": ["agent", "verdict", "auto_fix_rounds", "completed_at"]
+        },
+        "qa": {
+          "type": "object",
+          "properties": {
+            "agent": {"type": "string"},
+            "verdict": {"type": ["string", "null"]},
+            "completed_at": {"type": ["string", "null"], "format": "date-time"}
+          },
+          "required": ["agent", "verdict", "completed_at"]
+        },
+        "reviewer": {
+          "type": "object",
+          "properties": {
+            "agent": {"type": "string"},
+            "verdict": {"type": ["string", "null"]},
+            "blockers": {"type": "integer", "minimum": 0},
+            "warnings": {"type": "integer", "minimum": 0},
+            "completed_at": {"type": ["string", "null"], "format": "date-time"}
+          },
+          "required": ["agent", "verdict", "blockers", "warnings", "completed_at"]
+        }
+      },
+      "required": ["planner", "builder", "qa", "reviewer"],
+      "additionalProperties": false
+    },
+    "gates": {
+      "type": "object",
+      "properties": {
+        "lint": {"type": "string", "enum": ["pending", "pass", "fail"]},
+        "typecheck": {"type": "string", "enum": ["pending", "pass", "fail"]},
+        "test": {"type": "string", "enum": ["pending", "pass", "fail"]},
+        "build": {"type": "string", "enum": ["pending", "pass", "fail", "skipped"]}
+      },
+      "required": ["lint", "typecheck", "test", "build"],
+      "additionalProperties": false
+    },
+    "files": {
+      "type": "object",
+      "properties": {
+        "created": {"type": "array", "items": {"type": "string"}},
+        "modified": {"type": "array", "items": {"type": "string"}},
+        "forbidden": {"type": "array", "items": {"type": "string"}}
+      },
+      "required": ["created", "modified", "forbidden"],
+      "additionalProperties": false
+    },
+    "lifecycle": {
+      "type": "object",
+      "properties": {
+        "current_phase": {"type": ["string", "null"]},
+        "phase_entered_at": {"type": ["string", "null"], "format": "date-time"},
+        "phase_history": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "phase": {"type": "string"},
+              "entered_at": {"type": "string", "format": "date-time"},
+              "exited_at": {"type": "string", "format": "date-time"}
+            },
+            "required": ["phase", "entered_at", "exited_at"]
+          }
+        },
+        "retry_count": {"type": "integer", "minimum": 0},
+        "max_retries_per_phase": {
+          "type": "object",
+          "properties": {
+            "building": {"type": "integer"},
+            "auto_fixing": {"type": "integer"},
+            "qa": {"type": "integer"},
+            "reviewing": {"type": "integer"}
+          },
+          "required": ["building", "auto_fixing", "qa", "reviewing"]
+        }
+      },
+      "required": ["current_phase", "phase_entered_at", "phase_history", "retry_count", "max_retries_per_phase"]
+    },
+    "hermes": {
+      "type": "object",
+      "properties": {
+        "last_reported_at": {"type": ["string", "null"], "format": "date-time"},
+        "notifications_sent": {"type": "integer", "minimum": 0},
+        "pending_notifications": {"type": "array", "items": {"type": "string"}}
+      },
+      "required": ["last_reported_at", "notifications_sent", "pending_notifications"]
+    }
+  },
+  "additionalProperties": false
+}

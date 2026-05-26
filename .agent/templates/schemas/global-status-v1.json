@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://counselor-os.local/schemas/global-status-v1.json",
+  "title": "Global Status v1.0",
+  "description": "Factory global state schema for Hermes bus",
+  "type": "object",
+  "required": ["factory", "agents", "gates", "constraints", "project", "stats"],
+  "properties": {
+    "factory": {
+      "type": "object",
+      "required": ["version", "phase", "maturity_level", "last_updated", "uptime_started"],
+      "properties": {
+        "version": {"type": "string"},
+        "phase": {"type": "string"},
+        "maturity_level": {"type": "string"},
+        "last_updated": {"type": "string", "format": "date-time"},
+        "uptime_started": {"type": ["string", "null"], "format": "date-time"}
+      }
+    },
+    "agents": {
+      "type": "object",
+      "patternProperties": {
+        "^[a-z_]+$": {
+          "type": "object",
+          "required": ["agent", "model", "status", "current_task", "prompt_file"],
+          "properties": {
+            "agent": {"type": "string"},
+            "model": {"type": "string"},
+            "status": {"type": "string", "enum": ["idle", "busy", "standby", "offline"]},
+            "current_task": {"type": ["string", "null"]},
+            "prompt_file": {"type": "string"}
+          }
+        }
+      }
+    },
+    "gates": {
+      "type": "object",
+      "patternProperties": {
+        "^[a-z_]+$": {
+          "type": "object",
+          "properties": {
+            "backend": {"type": "string"},
+            "frontend": {"type": "string"}
+          }
+        }
+      }
+    },
+    "constraints": {
+      "type": "object",
+      "required": ["max_auto_fix_rounds", "max_file_lines", "max_parallel_tasks", "forbidden_tech"],
+      "properties": {
+        "max_auto_fix_rounds": {"type": "integer"},
+        "max_file_lines": {"type": "integer"},
+        "max_parallel_tasks": {"type": "integer"},
+        "forbidden_tech": {"type": "array", "items": {"type": "string"}},
+        "qa_cannot_modify": {"type": "array", "items": {"type": "string"}},
+        "builder_cannot_modify": {"type": "array", "items": {"type": "string"}},
+        "reviewer_cannot_modify": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "project": {
+      "type": "object",
+      "required": ["name", "current_phase", "tech_stack"],
+      "properties": {
+        "name": {"type": "string"},
+        "current_phase": {"type": "string"},
+        "tech_stack": {"type": "object"}
+      }
+    },
+    "stats": {
+      "type": "object",
+      "required": ["total_tasks", "completed_tasks", "failed_tasks", "active_tasks", "queued_tasks"],
+      "properties": {
+        "total_tasks": {"type": "integer"},
+        "completed_tasks": {"type": "integer"},
+        "failed_tasks": {"type": "integer"},
+        "active_tasks": {"type": "integer"},
+        "queued_tasks": {"type": "integer"},
+        "total_auto_fix_rounds": {"type": "integer"},
+        "total_blockers_found": {"type": "integer"},
+        "total_merge_cycles": {"type": "integer"}
+      }
+    }
+  },
+  "additionalProperties": false
+}
