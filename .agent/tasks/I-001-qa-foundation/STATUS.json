@@ -2,11 +2,11 @@
   "task_id": "I-001-qa-foundation",
   "title": "QA 基础设施 — lint + typecheck + test + E2E + CI + 移动端检查",
   "created_at": "2026-05-26T03:00:00+08:00",
-  "status": "BUILDING",
-  "phase": "build",
+  "status": "WAITING_MERGE_APPROVAL",
+  "phase": "review",
   "priority": 1,
-  "owner_agent": "opencode",
-  "next_agent": "reviewer",
+  "owner_agent": "claude-code",
+  "next_agent": "human",
   "branch": null,
   "tag": null,
   "blockers": 0,
@@ -17,8 +17,8 @@
     "vision": ".agent/tasks/I-001-qa-foundation/VISION.md",
     "spec": ".agent/tasks/I-001-qa-foundation/SPEC.md",
     "tasks": ".agent/tasks/I-001-qa-foundation/TASKS.md",
-    "qa_report": null,
-    "review": null
+    "qa_report": ".agent/tasks/I-001-qa-foundation/QA_REPORT.md",
+    "review": ".agent/tasks/I-001-qa-foundation/REVIEW.md"
   },
   "approvals": {
     "spec_approved": false,
@@ -38,22 +38,22 @@
     },
     "qa": {
       "agent": "OpenCode + GLM 5.1",
-      "verdict": null,
-      "completed_at": null
+      "verdict": "PASS",
+      "completed_at": "2026-05-27T00:15:00+08:00"
     },
     "reviewer": {
-      "agent": "opencode",
-      "verdict": null,
+      "agent": "Claude Code",
+      "verdict": "APPROVED",
       "blockers": 0,
       "warnings": 0,
-      "completed_at": null
+      "completed_at": "2026-05-27T00:30:00+08:00"
     }
   },
   "gates": {
-    "lint": "pending",
-    "typecheck": "pending",
-    "test": "pending",
-    "build": "pending"
+    "lint": "pass",
+    "typecheck": "pass",
+    "test": "pass",
+    "build": "pass"
   },
   "files": {
     "created": [
@@ -92,9 +92,20 @@
     "reviewer 必须检查：git diff 确认无业务代码变更"
   ],
   "lifecycle": {
-    "current_phase": "BUILDING",
-    "phase_entered_at": "2026-05-26T15:58:13.339484+00:00",
-    "phase_history": [],
+    "current_phase": "REVIEWING",
+    "phase_entered_at": "2026-05-27T00:30:00+08:00",
+    "phase_history": [
+      {
+        "phase": "BUILDING",
+        "entered_at": "2026-05-26T15:58:13.339484+00:00",
+        "exited_at": "2026-05-27T00:15:00+08:00"
+      },
+      {
+        "phase": "QA_RUNNING",
+        "entered_at": "2026-05-27T00:15:00+08:00",
+        "exited_at": "2026-05-27T00:30:00+08:00"
+      }
+    ],
     "retry_count": 0,
     "max_retries_per_phase": {
       "building": 3,
@@ -108,5 +119,5 @@
     "notifications_sent": 0,
     "pending_notifications": []
   },
-  "updated_at": "2026-05-26T15:58:13.339484+00:00"
+  "updated_at": "2026-05-27T00:30:00+08:00"
 }
